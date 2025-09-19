@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alexxtl的博客</title>
+    <!-- 引入Tailwind CSS框架 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入Google Fonts字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 自定义样式 */
+        body {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Noto Sans SC', sans-serif;
+            transition: background-image 1s ease-in-out;
+        }
+        .content-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: -1;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- 页面容器 -->
+    <div class="container mx-auto p-4 lg:p-8">
+        
+        <!-- 顶部博客标题 -->
+        <header class="text-center mb-8">
+            <h1 class="text-5xl font-bold text-gray-900 tracking-wider">探索者的数字空间</h1>
+            <p class="text-gray-600 mt-2">记录、分享、成长</p>
+        </header>
+
+        <!-- 主体内容区域 (Flex布局) -->
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <!-- 左侧边栏 -->
+            <aside class="w-full lg:w-1/4 flex-shrink-0">
+                <div class="space-y-8">
+                    <!-- 个人简介卡片 -->
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center card">
+                        <img src="https://placehold.co/128x128/6366f1/ffffff?text=头像" alt="博主头像" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-lg">
+                        <h2 class="text-2xl font-bold">Alexxtl</h2>
+                        <p class="text-gray-600 mt-2">一个热爱技术与生活的开发者。</p>
+                        <div class="flex justify-center space-x-4 mt-4">
+                            <a href="#" class="text-gray-500 hover:text-indigo-600 transition-colors">GitHub</a>
+                            <a href="#" class="text-gray-500 hover:text-indigo-600 transition-colors">Twitter</a>
+                            <a href="#" class="text-gray-500 hover:text-indigo-600 transition-colors">Email</a>
+                        </div>
+                    </div>
+
+                    <!-- 文章标签 -->
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
+                        <h3 class="text-xl font-bold mb-4 border-b pb-2">文章标签</h3>
+                        <div class="flex flex-wrap gap-2">
+                           <a href="#" class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-indigo-200 transition-colors">前端技术</a>
+                           <a href="#" class="bg-pink-100 text-pink-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-pink-200 transition-colors">生活随笔</a>
+                           <a href="#" class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-green-200 transition-colors">项目复盘</a>
+                           <a href="#" class="bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-gray-200 transition-colors">读书笔记</a>
+                        </div>
+                    </div>
+
+                    <!-- 友情链接 -->
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
+                        <h3 class="text-xl font-bold mb-4 border-b pb-2">友情链接</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li><a href="#" class="hover:text-indigo-600 transition-colors" target="_blank">友人A的博客</a></li>
+                            <li><a href="#" class="hover:text-indigo-600 transition-colors" target="_blank">技术大佬B的主页</a></li>
+                            <li><a href="#" class="hover:text-indigo-600 transition-colors" target="_blank">设计狮C的作品集</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 右侧文章列表 -->
+            <main class="w-full lg:flex-grow space-y-8">
+                
+                <!-- 文章预览 1 -->
+                <article class="bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-10 card relative content-overlay transition-shadow hover:shadow-xl">
+                    <h2 class="text-3xl font-bold mb-3"><a href="article.html" class="text-gray-900 hover:text-indigo-600">深入理解现代前端框架中的状态管理</a></h2>
+                    <div class="text-gray-500 text-sm mb-4">
+                        <span>2025年09月19日</span> | <span>分类：<a href="#" class="text-indigo-600 hover:underline">前端技术</a></span>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed mb-6">
+                        在现代Web应用开发中，尤其是单页面应用（SPA），组件化思想已深入人心。然而，当应用变得复杂，组件间的通信和数据共享就成了一个棘手的问题。为了解决这个问题，状态管理库应运而生...
+                    </p>
+                    <a href="article.html" class="inline-block bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-colors">阅读全文 &rarr;</a>
+                </article>
+
+                <!-- 文章预览 2 -->
+                <article class="bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-10 card relative content-overlay transition-shadow hover:shadow-xl">
+                    <h2 class="text-3xl font-bold mb-3"><a href="article.html" class="text-gray-900 hover:text-indigo-600">我的极简桌面搭建心得</a></h2>
+                    <div class="text-gray-500 text-sm mb-4">
+                        <span>2025年09月15日</span> | <span>分类：<a href="#" class="text-pink-600 hover:underline">生活随笔</a></span>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed mb-6">
+                        打造一个整洁、高效的桌面环境，不仅能提升工作效率，更能带来愉悦的心情。本文将分享我从线材管理、显示器选择到软件配置的全过程，希望能给你带来一些启发...
+                    </p>
+                    <a href="article.html" class="inline-block bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-colors">阅读全文 &rarr;</a>
+                </article>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript 逻辑 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reliableApi = 'https://api.waifu.pics/sfw/waifu';
+            fetch(reliableApi)
+                .then(response => {
+                    if (!response.ok) throw new Error('网络响应错误');
+                    return response.json();
+                })
+                .then(data => {
+                    const imageUrl = data.url;
+                    if (imageUrl) {
+                        const img = new Image();
+                        img.src = imageUrl;
+                        img.onload = () => {
+                            document.body.style.backgroundImage = `url('${imageUrl}')`;
+                        };
+                        img.onerror = () => setDefaultBackground();
+                    } else {
+                        setDefaultBackground();
+                    }
+                })
+                .catch(error => {
+                    console.error('获取随机背景图片失败:', error);
+                    setDefaultBackground();
+                });
+            
+            function setDefaultBackground() {
+                document.body.style.backgroundColor = '#f3f4f6';
+            }
+        });
+    </script>
+</body>
+</html>
+
