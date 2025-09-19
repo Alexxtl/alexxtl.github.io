@@ -58,6 +58,13 @@
             margin: 1.5rem 0;
             border-radius: 0.5rem;
         }
+        :not(pre) > code {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            color: #be123c; /* text-rose-700 */
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -113,72 +120,35 @@
                 </div>
             </aside>
 
-            <!-- 右侧文章列表 -->
-            <main class="w-full lg:flex-grow space-y-8">
-                
-                <!-- 文章预览 1 -->
-                <article class="bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-10 card relative content-overlay transition-shadow hover:shadow-xl">
-                    <h2 class="text-3xl font-bold mb-3"><a href="article.html" class="text-gray-900 hover:text-indigo-600">博客测试</a></h2>
-                    <div class="text-gray-500 text-sm mb-4">
-                        <span>2025年09月19日</span> | <span>分类：<a href="#" class="text-indigo-600 hover:underline">生活随笔</a></span>
-                    </div>
-                    <p class="text-gray-700 leading-relaxed mb-6">
-                        博客测试
-                    </p>
-                    <a href="article/bo-ke-ce-shi.html" class="inline-block bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-colors">阅读全文 &rarr;</a>
-                </article>
+            <!-- 右侧博客正文 -->
+            <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card relative content-overlay">
+                <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
+                <!-- 文章标题 -->
+                <h1 class="text-4xl font-bold mb-4 text-gray-900">博客测试</h1>
+                <!-- 文章元数据 -->
+                <div class="text-gray-500 mb-8 border-b pb-4">
+                    <span>发布于：2025年09月19日</span> | 
+                    <span>作者：Alexxtl</span> | 
+                    <span>分类：<a href="#" class="text-indigo-600 hover:underline">生活随笔</a></span>
+                </div>
+                <article class="prose prose-lg max-w-none text-gray-800">
+<p>博客测试</p>
 
-                <!-- 文章预览 2 -->
-                <article class="bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-10 card relative content-overlay transition-shadow hover:shadow-xl">
-                    <h2 class="text-3xl font-bold mb-3"><a href="article.html" class="text-gray-900 hover:text-indigo-600">个人简介</a></h2>
-                    <div class="text-gray-500 text-sm mb-4">
-                        <span>2025年09月15日</span> | <span>分类：<a href="#" class="text-pink-600 hover:underline">生活随笔</a></span>
-                    </div>
-                    <p class="text-gray-700 leading-relaxed mb-6">
-                        HA高二oier参上qaq
-                    </p>
-                    <a href="article/ge-ren-jian-jie.html" class="inline-block bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-colors">阅读全文 &rarr;</a>
                 </article>
-
             </main>
         </div>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-
-    <!-- JavaScript 逻辑 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const reliableApi = 'https://api.waifu.pics/sfw/waifu';
-            fetch(reliableApi)
-                .then(response => {
-                    if (!response.ok) throw new Error('网络响应错误');
-                    return response.json();
-                })
-                .then(data => {
-                    const imageUrl = data.url;
-                    if (imageUrl) {
-                        const img = new Image();
-                        img.src = imageUrl;
-                        img.onload = () => {
-                            document.body.style.backgroundImage = `url('${imageUrl}')`;
-                        };
-                        img.onerror = () => setDefaultBackground();
-                    } else {
-                        setDefaultBackground();
-                    }
-                })
-                .catch(error => {
-                    console.error('获取随机背景图片失败:', error);
-                    setDefaultBackground();
-                });
-            
-            function setDefaultBackground() {
-                document.body.style.backgroundColor = '#f3f4f6';
-            }
+            fetch(reliableApi).then(response => response.json()).then(data => {
+                const img = new Image();
+                img.src = data.url;
+                img.onload = () => { document.body.style.backgroundImage = `url('${data.url}')`; };
+            }).catch(() => { document.body.style.backgroundColor = '#f3f4f6'; });
         });
     </script>
 </body>
 </html>
-
