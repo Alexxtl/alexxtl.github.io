@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSP 2023 游记 - 我的个人博客</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <!-- MathJax 配置脚本，必须在加载 MathJax 主脚本之前 -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    
+    <style>
+        body { background-size: cover; background-position: center; background-attachment: fixed; font-family: 'Noto Sans SC', sans-serif; transition: background-image 1s ease-in-out; }
+        .card { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid rgba(0,0,0,0.05); }
+        html { scroll-behavior: smooth; }
+        pre[class*="language-"] { padding: 1rem; margin: 1.5rem 0; border-radius: 0.5rem; }
+        /* 为行内代码块添加样式 */
+        :not(pre) > code {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            color: #be123c; /* text-rose-700 */
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div class="container mx-auto p-4 lg:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-5xl font-bold text-gray-900 tracking-wider">Alexxtl的博客</h1>
+            <p class="text-gray-600 mt-2">记录、分享、成长</p>
+        </header>
+        <div class="flex flex-col lg:flex-row gap-8">
+            <aside class="w-full lg:w-1/4 flex-shrink-0">
+                <div class="space-y-8">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center card">
+                        <img src="images/avatar.png" alt="博主头像" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-lg">
+                        <h2 class="text-2xl font-bold">Alexxtl</h2>
+                        <p class="text-gray-600 mt-2">一个热爱技术与生活的开发者。</p>
+                        <div class="flex justify-center flex-wrap gap-x-4 gap-y-2 mt-4">
+                            <a href="https://github.com/Alexxtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">GitHub</a>
+                            <a href="https://www.luogu.com.cn/user/598187" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">Luogu</a>
+                            <a href="https://blog.csdn.net/Alexxtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">CSDN</a>
+                            <a href="https://codeforces.com/profile/Alex_xtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">Codeforces</a>
+                            <a href="https://atcoder.jp/users/xiaotianlin" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">AtCoder</a>
+                        </div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
+                        <h3 class="text-xl font-bold mb-4 border-b pb-2">文章标签</h3>
+                        <div class="flex flex-wrap gap-2">
+                           <a href="#" class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-indigo-200 transition-colors">生活随笔</a>
+
+                        </div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
+                        <h3 class="text-xl font-bold mb-4 border-b pb-2">友情链接</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li><a href="https://blog.csdn.net/BabyFalse?type=blog" class="hover:text-indigo-600 transition-colors" target="_blank">xwj</a></li>
+                            <li><a href="https://www.cnblogs.com/MrSWdAxiv" class="hover:text-indigo-600 transition-colors" target="_blank">fzy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+            <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card">
+                <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
+                <h1 class="text-4xl font-bold mb-4 text-gray-900">CSP 2023 游记</h1>
+                <div class="text-gray-500 mb-8 border-b pb-4">
+                    <span>发布于：2023年10月21日</span> | 
+                    <span>作者：Alexxtl</span> | 
+                    <span>分类：<a href="#" class="text-purple-600 hover:underline">生活随笔</a></span>
+                </div>
+                <article class="prose prose-lg max-w-none text-gray-800">
+<h2 class="text-2xl font-bold mt-8 mb-4">[更好的阅读体验](https://www.cnblogs.com/Alexxtl/p/17779466.html)</h2>
+<p>------------</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day 0</h2>
+<p>和 <a href="https://www.luogu.com.cn/user/765939" class="text-indigo-600 hover:underline" target="_blank">printfmingren</a> 整理了一下不会的知识点，发现有点多，遂开摆</p>
+<p>~~音游真的太好玩了~~</p>
+<p>对着《算法竞赛进阶指南》复习了下对拍器的写法，把部分算法的模板又打了一遍</p>
+<p>感觉前途渺茫</p>
+<p>------------</p>
+<p># J组</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day 1</h2>
+<p>进考场前碰见了 <a href="https://www.luogu.com.cn/user/387037" class="text-indigo-600 hover:underline" target="_blank">MithrilSword_XIV</a>、<a href="https://www.luogu.com.cn/user/585978" class="text-indigo-600 hover:underline" target="_blank">_Jarvis_</a>、<a href="https://www.luogu.com.cn/user/601142" class="text-indigo-600 hover:underline" target="_blank">hnoi</a> 和 <a href="https://www.luogu.com.cn/user/361534" class="text-indigo-600 hover:underline" target="_blank">weilanbb526</a>，寒暄了几句后进了考场</p>
+<p>看了看，怎么同班的 <a href="https://www.luogu.com.cn/user/633230" class="text-indigo-600 hover:underline" target="_blank">suojingxin123</a> 神犇坐我旁边啊</p>
+<p>考场上 T1 找了半天规律，最后发现直接暴力就行了（我甚至为这道题对拍了一下）</p>
+<p>T2 也很简单，每次遇到价格更低的就更新一下就好了</p>
+<p> </p>
+<p>T3 大模拟，不好评价，花了一个多小时写了 100 多行过了大样例</p>
+<p>T4 对于 $k=0$ 且 $a_i=0$ 的情况可以直接最短路，其他情况考场上没时间想了，输出 $-1$ 跑路</p>
+<p>出考场一问人均200多，<a href="https://www.luogu.com.cn/user/461956" class="text-indigo-600 hover:underline" target="_blank">Cz_HUV</a> 说他拿了 320，%%%</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day 2</h2>
+<p>突然发现欸我T1怎么忘加了一个判断，100 -> 0（所以我对拍怎么过的？）</p>
+<p> T2 不知道怎么挂了 35（小图灵）（可能是没开 long long），100 -> 65 </p>
+<p> </p>
+<p>T3 过了（~~关于我 T1 0 分但 T3 100 分这件事~~）</p>
+<p>T4 小图灵 20 分，不知道怎么回事</p>
+<p>结果 310 -> 185（小图灵）</p>
+<p>麻了</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day n</h2>
+<p>出成绩了。</p>
+<p>T1 给了 20</p>
+<p>T2 只给了 50 分，什么时候 CCF 数据这么强了？</p>
+<p>T3 AC 了</p>
+<p>T4 15 分，意料之内</p>
+<p>总分 185 分，和小图灵一样。</p>
+<p>### 既然如此，毁灭罢，赶紧的！</p>
+<p>------------</p>
+<p># S 组</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day 1</h2>
+<p>进考场一眼就看到了 zzsz 的几位巨佬（<a href="https://www.luogu.com.cn/user/764957" class="text-indigo-600 hover:underline" target="_blank">AnEasySong</a> 穿着校服真的好显眼），发现 <a href="https://www.luogu.com.cn/user/765091" class="text-indigo-600 hover:underline" target="_blank">yewei15516922573</a> 和 <a href="https://www.luogu.com.cn/user/602361" class="text-indigo-600 hover:underline" target="_blank">114514wxy</a> 怎么带着行李箱啊，不理解</p>
+<p>然后和 <a href="https://www.luogu.com.cn/user/696106" class="text-indigo-600 hover:underline" target="_blank">Leowang2009</a> 一起进了考点，发现和 <a href="https://www.luogu.com.cn/user/542286" class="text-indigo-600 hover:underline" target="_blank">DSG_Shadow</a> 还有 <a href="https://www.luogu.com.cn/user/654636" class="text-indigo-600 hover:underline" target="_blank">huanghezhe</a> 学长一个考场，激动</p>
+<p>开题先看 T1，发现顶多橙题，直接一个暴力完事，估计能拿 100 分</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+const int N=1e5+10;
+
+int n,num[N],ans;
+
+inline int read(){
+	int x=0,f=1;
+	char ch=getchar();
+	while(ch&lt;&apos;0&apos;||ch&gt;&apos;9&apos;){
+		if(ch==&apos;-&apos;){
+			f=-1;
+		}
+		ch=getchar();
+	}
+	while(ch&gt;=&apos;0&apos;&amp;&amp;ch&lt;=&apos;9&apos;){
+		x=(x&lt;&lt;1)+(x&lt;&lt;3)+(ch^48);
+		ch=getchar();
+	}
+	return x*f;
+}
+
+inline void write(int x){
+	if(x&lt;0){
+		putchar(&apos;-&apos;);
+		x=-x;
+	}
+	if(x&gt;9){
+		write(x/10);
+	}
+	putchar(x%10+&apos;0&apos;);
+}
+
+int cl(int x){
+	if(x&lt;0){
+		return x+10;
+	}
+	if(x&gt;=10){
+		return x-10;
+	}
+}
+
+int az(int a,int b,int c,int d,int e){
+	return a*10000+b*1000+c*100+d*10+e;
+}
+
+int main(){
+	freopen(&quot;lock.in&quot;,&quot;r&quot;,stdin);
+	freopen(&quot;lock.out&quot;,&quot;w&quot;,stdout);
+	n=read();
+	for(int i=1;i&lt;=n;i++){
+		int a=read(),b=read(),c=read(),d=read(),e=read();
+		for(int j=1;j&lt;=9;j++){
+			num[az(cl(a+j),b,c,d,e)]++;
+			num[az(a,cl(b+j),c,d,e)]++;
+			num[az(a,b,cl(c+j),d,e)]++;
+			num[az(a,b,c,cl(d+j),e)]++;
+			num[az(a,b,c,d,cl(e+j))]++;
+			num[az(cl(a+j),cl(b+j),c,d,e)]++;
+			num[az(a,cl(b+j),cl(c+j),d,e)]++;
+			num[az(a,b,cl(c+j),cl(d+j),e)]++;
+			num[az(a,b,c,cl(d+j),cl(e+j))]++;
+		}
+	}
+	for(int i=0;i&lt;=99999;i++){
+		if(num[i]==n){
+			ans++;
+		}
+	}
+	write(ans);
+	fclose(stdin);
+	fclose(stdout);
+	return 0;
+}
+</code></pre>
+<p>T2 出来后听说，写了一个 $O(n^3)$ 的区间 dp，预估 35 分，<a href="https://www.luogu.com.cn/user/761669" class="text-indigo-600 hover:underline" target="_blank">cwl</a> 直接薄纱紫题，%%% <a href="https://www.luogu.com.cn/user/761669" class="text-indigo-600 hover:underline" target="_blank">cwl</a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define ll long long
+
+int n;
+ll ans;
+bool f[1010][1010];
+string s;
+
+inline int read(){
+	int x=0,f=1;
+	char ch=getchar();
+	while(ch&lt;&apos;0&apos;||ch&gt;&apos;9&apos;){
+		if(ch==&apos;-&apos;){
+			f=-1;
+		}
+		ch=getchar();
+	}
+	while(ch&gt;=&apos;0&apos;&amp;&amp;ch&lt;=&apos;9&apos;){
+		x=(x&lt;&lt;1)+(x&lt;&lt;3)+(ch^48);
+		ch=getchar();
+	}
+	return x*f;
+}
+
+inline void write(ll x){
+	if(x&lt;0){
+		putchar(&apos;-&apos;);
+		x=-x;
+	}
+	if(x&gt;9){
+		write(x/10);
+	}
+	putchar(x%10+&apos;0&apos;);
+}
+
+void solve1(){
+	for(int len=2;len&lt;=n;len+=2){
+		for(int l=1;l+len-1&lt;=n;l++){
+			int r=l+len-1;
+			if(l==r-1){
+				if(s[l-1]==s[r-1]){
+					f[l][r]=1;
+				}
+				continue;
+			}
+			if(s[l-1]==s[r-1]){
+				if(f[l+1][r-1]){
+					f[l][r]=1;
+				}
+			}else{
+				for(int i=l+1;i&lt;=r-2;i++){
+					if(f[l][i]&amp;&amp;f[i+1][r]){
+						f[l][r]=1;
+					}
+				}
+			}
+		}
+	}
+	for(int i=1;i&lt;n;i++){
+		for(int j=i+1;j&lt;=n;j++){
+			if(f[i][j]){
+				ans++;
+			}
+		}
+	}
+	write(ans);
+}
+
+int main(){
+	freopen(&quot;game.in&quot;,&quot;r&quot;,stdin);
+	freopen(&quot;game.out&quot;,&quot;w&quot;,stdout);
+	n=read();
+	cin&gt;&gt;s;
+	if(n&lt;=800){
+		solve1();
+	}
+	fclose(stdin);
+	fclose(stdout);
+	return 0;
+}
+</code></pre>
+<p>T3 一看大模拟（~~CCF nmsl~~），做完花了一个多小时，结果最后十分钟发现题读错了，$op=1$ 时我以为要建一个结构体，但其实只是定义罢了，但也没时间改了，于是 100 -> 15</p>
+<p>代码就不放了，太长了</p>
+<p>T4 对于 A 性质打了一个优先队列 BFS，估分35</p>
+<p>最终估分 270 -> 185（应该没人挂分像我这么离谱吧）</p>
+<p>出考场发现人均 100+，但 <a href="https://www.luogu.com.cn/user/761669" class="text-indigo-600 hover:underline" target="_blank">cwl</a> 200，<a href="https://www.luogu.com.cn/user/761669" class="text-indigo-600 hover:underline" target="_blank">cwl</a> 真的太强了！！！</p>
+<p>听说 T2 是个原题，来自 CF 的一个题，难评。</p>
+<p>T4 出来后才发现算法假了，和 <a href="https://www.luogu.com.cn/user/765939" class="text-indigo-600 hover:underline" target="_blank">printfmingren</a> 研究了一下发现需要加一些条件处理一下后面的区域，于是 35 -> 0</p>
+<p>于是 185 -> 150，惨惨惨（应该没人挂分像我这么离谱吧）</p>
+<p>感觉这次 T1 太过简单，T2 区间 dp 太过显然，区分度太低，应该能人均 135，一等悬了</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day 2</h2>
+<p>T1 全 RE 了</p>
+<p>在</p>
+<pre><code class="language-cpp">int cl(int x){
+	if(x&lt;0){
+		return x+10;
+	}
+	if(x&gt;=10){
+		return x-10;
+	}
+}
+</code></pre>
+<p>中加了一行 <code></code><code>return x</code><code></code> 后变成</p>
+<pre><code class="language-cpp">int cl(int x){
+	if(x&lt;0){
+		return x+10;
+	}
+	if(x&gt;=10){
+		return x-10;
+	}
+   return x;
+}
+</code></pre>
+<p>就 AC 了，难绷</p>
+<p>T3 的 15 分也挂没了，不知道为什么</p>
+<p>150 -> 35</p>
+<p>于是最终 270 -> 35（挂掉 235 分，我还有救吗？）</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day n</h2>
+<p>只有 40。。。</p>
+<p>NOIP去不成了。</p>
+<p>翻不了盘了。</p>
+<p><a href="https://www.luogu.com.cn/user/387037" class="text-indigo-600 hover:underline" target="_blank">MithrilSword_XIV</a> 135 分</p>
+<p><a href="https://www.luogu.com.cn/user/633230" class="text-indigo-600 hover:underline" target="_blank">suojingxin123</a> 150 分</p>
+<p><a href="https://www.luogu.com.cn/user/361534" class="text-indigo-600 hover:underline" target="_blank">weilanbb526</a> 115 分</p>
+<p>机房大佬们都好强</p>
+<p>只有我考得如此的抽象</p>
+<p> </p>
+<p>### 既然如此，毁灭罢，赶紧的！</p>
+<p>------------</p>
+<p># 总结</p>
+<p>难受</p>
+<p>多半是创下 OI 史最多挂分记录了吧（悲）</p>
+<p>近一年半的努力化作泡影，赛前的豪言壮语现在看已变成了笑话，冲击省队的理想还未开始便已结束</p>
+<p>已经初三了，不出意外的话这是我初中阶段最后一场 OI 比赛了，接下来就要暂时 AFO 去学 whk 了</p>
+<p>希望其他 OIER 们不要像我一样如此离谱地挂分</p>
+<p><strong>愿我们都有光明的前途</strong></p>
+<p># THE END</p>
+
+                </article>
+            </main>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reliableApi = 'https://api.waifu.pics/sfw/waifu';
+            fetch(reliableApi).then(response => response.json()).then(data => {
+                const img = new Image();
+                img.src = data.url;
+                img.onload = () => { document.body.style.backgroundImage = `url('${data.url}')`; };
+            }).catch(() => { document.body.style.backgroundColor = '#f3f4f6'; });
+        });
+    </script>
+</body>
+</html>

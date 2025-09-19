@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alexxtl的博客</title>
-    <!-- 引入Tailwind CSS框架 -->
+    <title>CSP 2024 游记 - 我的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入Google Fonts字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
-    <!-- 引入代码高亮库 PrismJS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <!-- MathJax 配置脚本，必须在加载 MathJax 主脚本之前 -->
     <script>
         MathJax = {
             tex: {
@@ -23,41 +22,14 @@
             }
         };
     </script>
-    <!-- 引入MathJax库以支持LaTeX -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    
     <style>
-        /* 自定义样式 */
-        body {
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            font-family: 'Noto Sans SC', sans-serif;
-            transition: background-image 1s ease-in-out;
-        }
-        .content-overlay::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: -1;
-        }
-        .card {
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-        /* 覆盖PrismJS默认样式以适应布局 */
-        pre[class*="language-"] {
-            padding: 1rem;
-            margin: 1.5rem 0;
-            border-radius: 0.5rem;
-        }
+        body { background-size: cover; background-position: center; background-attachment: fixed; font-family: 'Noto Sans SC', sans-serif; transition: background-image 1s ease-in-out; }
+        .card { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid rgba(0,0,0,0.05); }
+        html { scroll-behavior: smooth; }
+        pre[class*="language-"] { padding: 1rem; margin: 1.5rem 0; border-radius: 0.5rem; }
+        /* 为行内代码块添加样式 */
         :not(pre) > code {
             background-color: #f3f4f6; /* bg-gray-100 */
             color: #be123c; /* text-rose-700 */
@@ -68,48 +40,33 @@
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
-
-    <!-- 页面容器 -->
     <div class="container mx-auto p-4 lg:p-8">
-        
-        <!-- 顶部博客标题 -->
         <header class="text-center mb-8">
             <h1 class="text-5xl font-bold text-gray-900 tracking-wider">Alexxtl的博客</h1>
             <p class="text-gray-600 mt-2">记录、分享、成长</p>
         </header>
-
-        <!-- 主体内容区域 (Flex布局) -->
         <div class="flex flex-col lg:flex-row gap-8">
-
-            <!-- 左侧边栏 -->
             <aside class="w-full lg:w-1/4 flex-shrink-0">
                 <div class="space-y-8">
-                    <!-- 个人简介卡片 -->
                     <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center card">
                         <img src="images/avatar.png" alt="博主头像" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-lg">
                         <h2 class="text-2xl font-bold">Alexxtl</h2>
                         <p class="text-gray-600 mt-2">一个热爱技术与生活的开发者。</p>
                         <div class="flex justify-center flex-wrap gap-x-4 gap-y-2 mt-4">
-                            <a href="https://github.com/Alexxtl" class="text-gray-500 hover:text-indigo-600 transition-colors">GitHub</a>
-                            <a href="https://www.luogu.com.cn/user/598187" class="text-gray-500 hover:text-indigo-600 transition-colors">Luogu</a>
-                            <a href="https://blog.csdn.net/Alexxtl" class="text-gray-500 hover:text-indigo-600 transition-colors">CSDN</a>
-                            <a href="https://codeforces.com/profile/Alex_xtl" class="text-gray-500 hover:text-indigo-600 transition-colors">Codeforces</a>
-                            <a href="https://atcoder.jp/users/xiaotianlin" class="text-gray-500 hover:text-indigo-600 transition-colors">AtCoder</a>
+                            <a href="https://github.com/Alexxtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">GitHub</a>
+                            <a href="https://www.luogu.com.cn/user/598187" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">Luogu</a>
+                            <a href="https://blog.csdn.net/Alexxtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">CSDN</a>
+                            <a href="https://codeforces.com/profile/Alex_xtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">Codeforces</a>
+                            <a href="https://atcoder.jp/users/xiaotianlin" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">AtCoder</a>
                         </div>
                     </div>
-
-                    <!-- 文章标签 -->
                     <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
                         <h3 class="text-xl font-bold mb-4 border-b pb-2">文章标签</h3>
                         <div class="flex flex-wrap gap-2">
-                           <a href="#" class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-indigo-200 transition-colors">前端技术</a>
-                           <a href="#" class="bg-pink-100 text-pink-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-pink-200 transition-colors">生活随笔</a>
-                           <a href="#" class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-green-200 transition-colors">算法题解</a>
-                           <a href="#" class="bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-gray-200 transition-colors">读书笔记</a>
+                           <a href="#" class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-indigo-200 transition-colors">生活随笔</a>
+
                         </div>
                     </div>
-
-                    <!-- 友情链接 -->
                     <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
                         <h3 class="text-xl font-bold mb-4 border-b pb-2">友情链接</h3>
                         <ul class="space-y-3 text-gray-700">
@@ -119,20 +76,33 @@
                     </div>
                 </div>
             </aside>
-
-            <!-- 右侧博客正文 -->
-            <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card relative content-overlay">
+            <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card">
                 <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
-                <!-- 文章标题 -->
-                <h1 class="text-4xl font-bold mb-4 text-gray-900">博客测试</h1>
-                <!-- 文章元数据 -->
+                <h1 class="text-4xl font-bold mb-4 text-gray-900">CSP 2024 游记</h1>
                 <div class="text-gray-500 mb-8 border-b pb-4">
-                    <span>发布于：2025年09月19日</span> | 
+                    <span>发布于：2024年10月24日</span> | 
                     <span>作者：Alexxtl</span> | 
-                    <span>分类：<a href="#" class="text-indigo-600 hover:underline">生活随笔</a></span>
+                    <span>分类：<a href="#" class="text-purple-600 hover:underline">生活随笔</a></span>
                 </div>
                 <article class="prose prose-lg max-w-none text-gray-800">
-<p>博客测试</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">[更好的阅读体验](https://www.cnblogs.com/Alexxtl/p/18500277)</h2>
+<p>---</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day 0</h2>
+<p>在机房摆烂了一天。</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day 1</h2>
+<p>13:30 到了考点，想睡一会发现睡不着。</p>
+<p>想面基 fzy，但他已经进考场了，没面到。</p>
+<p>14:10 左右进的考场。这考场的环境真的抽象。</p>
+<p>开考 10 min 终于把编译器调完了。</p>
+<p>又过了 10 min 把 T1 秒了。</p>
+<p>随后看了看 T2，发现有一些思路，打了半小时后测了一下样例结果没过，发现是题读错了，于是先扔了。</p>
+<p>又看了一会 T3，半小时写完了一个 $O(n^2)$ 的 dp，测了一下发现又没过样例，调了一小时才发现是多测没清空。难绷。</p>
+<p>看了看 T4，没什么思路，又回去看 T2。重新读了一遍题之后会了一个 60 分的做法，写了半小时发现还是不对，调了一小时也没发现哪里有问题。此时只剩 20 min 了，放弃调代码去写了个 20 分的暴力 dfs。结果还是没能过样例？调到结束都没能调出来。</p>
+<p>最终估分 100 + 0 + 50 + 0 = 150。</p>
+<p>考完后才发现 pct 坐我右前方，wjl 坐我左前方。wjl 似乎是把 T2 A了，orz。</p>
+<p>出场一问，ghz 250，wxy 210。zyb 384。</p>
+<p>只有我没上 200。只有我 T2 没分。喜提机房倒一。</p>
+<p>算了，毁灭罢，赶紧的。</p>
 
                 </article>
             </main>
