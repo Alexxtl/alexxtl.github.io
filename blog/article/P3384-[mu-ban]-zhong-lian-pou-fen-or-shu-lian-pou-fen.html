@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P3384 【模板】重链剖分/树链剖分 题解 - Alexxtl的博客</title>
+    <title>P3384 【模板】重链剖分/树链剖分 题解 - 我的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +86,7 @@
 <p>树链剖分是一个在信息学竞赛中使用很频繁的算法，其通过将树分割成若干条链的形式，维护树上路径的信息。树链剖分由很多种形式，如重链剖分，长链剖分以及实链剖分等，此处只涉及重链剖分。</p>
 <p>重链剖分可以将树上任意一条路径划分成不超过 $\log n$ 条连续的链，每条链上的点深度互不相同。</p>
 <p>重链剖分能保证划分出的每条链上的节点 dfs 序连续，因此可以使用线段树等对序列进行维护的数据结构来维护树上路径的信息。除此之外，重链剖分还经常用于实现其他功能，如求最近公共祖先等。</p>
-<p>### 定义：</p>
+<h3 class="text-xl font-bold mt-6 mb-3">定义：</h3>
 <ul class="list-disc pl-5 my-4">
 <li>重子节点：对于每个非叶节点，定义其子节点中<strong>子树最大</strong>的子节点（如有相同任取起义）为重子节点。</li>
 </ul>
@@ -142,13 +142,13 @@ void dfs2(int x){
 <li><strong>子树上</strong>：</li>
 </ul>
 <p>  由于子树的 dfs 序连续，修改或查询一个节点的子树只用处理这一段连续的 dfs 序区间，<strong>线段树</strong>维护即可。时间复杂度 $O(\log n)$。</p>
-<p>### 正确性证明：</p>
+<h3 class="text-xl font-bold mt-6 mb-3">正确性证明：</h3>
 <p>至于为什么这么做是对的，下面提供证明：</p>
 <p>令 $x$ 和 $y$ 表示两个节点，$z$ 表示 $x$ 和 $y$ 的最近公共祖先，假设 $x$ 在 $z$ 所在的重链上且 $y$ 不在，则 $y$ 一定在 $z$ 的轻子节点的子树上，显然 $y$ 所在的重链深度一定更深，所以会优先跳 $y$，直到 $y$ 跳到 $z$ 为止。如都不在 $z$ 所在的重链上，上跳时总有一个会跳到 $z$ 所在的重链上。当二者都在该链上时，直接区间维护即可。如此，显然不会更新多余的节点，也不会有节点被漏掉。</p>
-<p>### 时间复杂度：</p>
-<p>#### 1.重链数量</p>
+<h3 class="text-xl font-bold mt-6 mb-3">时间复杂度：</h3>
+<h4 class="text-lg font-bold mt-5 mb-2">1.重链数量</h4>
 <p>从任意节点到根的路径上，轻边的数量不超过 $\log n$ 条，这是因为在每次经过轻边时，子树的大小至少减半，显然最多经过 $\log n$ 条轻边。因此，每个路径拆解后重链不会超过 $\log n$ 条。</p>
-<p>#### 2.单次操作复杂度分析</p>
+<h4 class="text-lg font-bold mt-5 mb-2">2.单次操作复杂度分析</h4>
 <p><strong>路径上操作</strong>：每条重链的区间操作通过线段树实现，复杂度为 $O(\log n)$。最多会经过 $\log n$ 条重链，故总时间复杂度为 $O(\log n) × O(\log n) = O(\log^2 n)$。</p>
 <p><strong>子树上操作</strong>：该操作只需进行一次线段树的区间修改或查询，复杂度为 $O(\log n)$。</p>
 <h2 class="text-2xl font-bold mt-8 mb-4">四、通过代码：</h2>

@@ -24,7 +24,7 @@ const std::string HTML_TEMPLATE = R"HTML_TEMPLATE(<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><!--TITLE_PLACEHOLDER--> - Alexxtl的博客</title>
+    <title><!--TITLE_PLACEHOLDER--> - 我的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -250,11 +250,22 @@ std::string parse_content_to_html(std::istream& input) {
                     else { output << "<p>" << block_buffer.str() << "</p>\n"; block_buffer.str(""); }
                 } else if (line.length() >= 3 && (line.find_first_not_of('-') == std::string::npos || line.find_first_not_of('*') == std::string::npos)) {
                     flush_list_if_needed(); output << "<hr class=\"my-8 border-gray-300\">\n";
-                } else if (line.rfind("# ", 0) == 0) {
-                    flush_list_if_needed(); output << "<h1 class=\"text-3xl font-bold mt-10 mb-5\">" << parse_inline_markdown(line.substr(2)) << "</h1>\n";
+                } 
+                // 修正：从H6到H1检查，确保正确匹配
+                else if (line.rfind("###### ", 0) == 0) {
+                    flush_list_if_needed(); output << "<h6 class=\"text-sm font-bold mt-4 mb-2 text-gray-700\">" << parse_inline_markdown(line.substr(7)) << "</h6>\n";
+                } else if (line.rfind("##### ", 0) == 0) {
+                    flush_list_if_needed(); output << "<h5 class=\"text-base font-bold mt-4 mb-2\">" << parse_inline_markdown(line.substr(6)) << "</h5>\n";
+                } else if (line.rfind("#### ", 0) == 0) {
+                    flush_list_if_needed(); output << "<h4 class=\"text-lg font-bold mt-5 mb-2\">" << parse_inline_markdown(line.substr(5)) << "</h4>\n";
+                } else if (line.rfind("### ", 0) == 0) {
+                    flush_list_if_needed(); output << "<h3 class=\"text-xl font-bold mt-6 mb-3\">" << parse_inline_markdown(line.substr(4)) << "</h3>\n";
                 } else if (line.rfind("## ", 0) == 0) {
                     flush_list_if_needed(); output << "<h2 class=\"text-2xl font-bold mt-8 mb-4\">" << parse_inline_markdown(line.substr(3)) << "</h2>\n";
-                } else if (line.rfind("- ", 0) == 0) {
+                } else if (line.rfind("# ", 0) == 0) {
+                    flush_list_if_needed(); output << "<h1 class=\"text-3xl font-bold mt-10 mb-5\">" << parse_inline_markdown(line.substr(2)) << "</h1>\n";
+                } 
+                else if (line.rfind("- ", 0) == 0) {
                     if (!in_list) { output << "<ul class=\"list-disc pl-5 my-4\">\n"; in_list = true; }
                     output << "<li>" << parse_inline_markdown(line.substr(2)) << "</li>\n";
                 } else if (line.empty()) {
@@ -526,7 +537,7 @@ void process_batch() {
         std::cout << "  - 已成功生成: " << output_filename << "\n";
     }
 
-    std::string preview_filename = "`[pre-index.html]previews_for_index.html";
+    std::string preview_filename = "`[pre-index]previews_for_index.html";
     std::ofstream preview_file(preview_filename);
     preview_file << all_previews_ss.str();
     preview_file.close();
@@ -560,4 +571,3 @@ int main() {
 
     return 0;
 }
-
