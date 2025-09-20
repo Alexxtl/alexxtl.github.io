@@ -24,7 +24,7 @@ const std::string HTML_TEMPLATE = R"HTML_TEMPLATE(<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><!--TITLE_PLACEHOLDER--> - 我的个人博客</title>
+    <title><!--TITLE_PLACEHOLDER--> - Alexxtl的博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
