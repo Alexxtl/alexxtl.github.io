@@ -12,6 +12,7 @@
 // Platform-specific includes for directory listing
 #ifdef _WIN32
 #include <windows.h>
+// Removed <codecvt> and <locale> as they are unreliable in some compilers
 #else
 #include <dirent.h>
 #include <sys/stat.h>
@@ -30,7 +31,6 @@ const std::string HTML_TEMPLATE = R"HTML_TEMPLATE(<!DOCTYPE html>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     
-    <!-- MathJax 配置脚本，必须在加载 MathJax 主脚本之前 -->
     <script>
         MathJax = {
             tex: {
@@ -49,10 +49,9 @@ const std::string HTML_TEMPLATE = R"HTML_TEMPLATE(<!DOCTYPE html>
         .card { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid rgba(0,0,0,0.05); }
         html { scroll-behavior: smooth; }
         pre[class*="language-"] { padding: 1rem; margin: 1.5rem 0; border-radius: 0.5rem; }
-        /* 为行内代码块添加样式 */
         :not(pre) > code {
-            background-color: #f3f4f6; /* bg-gray-100 */
-            color: #be123c; /* text-rose-700 */
+            background-color: #f3f4f6;
+            color: #be123c;
             padding: 0.125rem 0.375rem;
             border-radius: 0.25rem;
             font-size: 0.9em;
@@ -170,11 +169,11 @@ size_t find_next_token(const std::string& text, size_t start_pos) {
     size_t p4 = text.find('[', start_pos);
     size_t p5 = text.find('$', start_pos);
     size_t next_pos = std::string::npos;
-    if (p1 != std::string::npos) next_pos = std::min(next_pos, p1);
-    if (p2 != std::string::npos) next_pos = std::min(next_pos, p2);
-    if (p3 != std::string::npos) next_pos = std::min(next_pos, p3);
-    if (p4 != std::string::npos) next_pos = std::min(next_pos, p4);
-    if (p5 != std::string::npos) next_pos = std::min(next_pos, p5);
+    if (p1 != std::string::npos) next_pos = (next_pos == std::string::npos) ? p1 : std::min(next_pos, p1);
+    if (p2 != std::string::npos) next_pos = (next_pos == std::string::npos) ? p2 : std::min(next_pos, p2);
+    if (p3 != std::string::npos) next_pos = (next_pos == std::string::npos) ? p3 : std::min(next_pos, p3);
+    if (p4 != std::string::npos) next_pos = (next_pos == std::string::npos) ? p4 : std::min(next_pos, p4);
+    if (p5 != std::string::npos) next_pos = (next_pos == std::string::npos) ? p5 : std::min(next_pos, p5);
     return next_pos;
 }
 
@@ -284,27 +283,41 @@ std::string parse_content_to_html(std::istream& input) {
     return output.str();
 }
 
-// --- NEW File System & Batch Processing ---
+// --- File System & Batch Processing ---
 
 std::vector<std::string> list_txt_files(const std::string& directory) {
     std::vector<std::string> files;
 #ifdef _WIN32
+    auto to_wstring = [](const std::string& str) -> std::wstring {
+        if (str.empty()) return std::wstring();
+        int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+        std::wstring wstrTo(size_needed, 0);
+        MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+        return wstrTo;
+    };
+    auto to_string = [](const std::wstring& wstr) -> std::string {
+        if (wstr.empty()) return std::string();
+        int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+        std::string strTo(size_needed, 0);
+        WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+        return strTo;
+    };
+
     std::string search_path = directory + "\\*.txt";
-    WIN32_FIND_DATA fd;
-    HANDLE hFind = FindFirstFile(search_path.c_str(), &fd);
+    WIN32_FIND_DATAW fd;
+    std::wstring w_search_path = to_wstring(search_path);
+    HANDLE hFind = FindFirstFileW(w_search_path.c_str(), &fd);
     if (hFind != INVALID_HANDLE_VALUE) {
         do {
             if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                files.push_back(fd.cFileName);
+                files.push_back(to_string(fd.cFileName));
             }
-        } while (FindNextFile(hFind, &fd));
+        } while (FindNextFileW(hFind, &fd));
         FindClose(hFind);
     }
 #else
     DIR* dir = opendir(directory.c_str());
-    if (dir == NULL) {
-        return files;
-    }
+    if (dir == NULL) { return files; }
     struct dirent* entry;
     while ((entry = readdir(dir)) != NULL) {
         std::string filename = entry->d_name;
@@ -320,9 +333,9 @@ std::vector<std::string> list_txt_files(const std::string& directory) {
 std::string generate_preview_html(const std::string& title, const std::string& summary, const std::string& date_str, const std::string& category, const std::string& html_filename) {
     std::stringstream ss;
     ss << "<!-- Article Preview for: " << escape_html(title) << " -->\n";
-    ss << "<article class=\"bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-10 card transition-shadow hover:shadow-xl\">\n";
+    ss << "<article class=\"bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-10 card transition-shadow hover:shadow-xl article-item\">\n";
     ss << "    <h2 class=\"text-3xl font-bold mb-3\">\n";
-    ss << "        <a href=\"" << html_filename << "\" class=\"text-gray-900 hover:text-indigo-600\">" << escape_html(title) << "</a>\n";
+    ss << "        <a href=\"article/" << html_filename << "\" class=\"text-gray-900 hover:text-indigo-600\">" << escape_html(title) << "</a>\n";
     ss << "    </h2>\n";
     ss << "    <div class=\"text-gray-500 text-sm mb-4\">\n";
     ss << "        <span>" << date_str << "</span> | <span>分类：<a href=\"#\" class=\"text-pink-600 hover:underline\">" << escape_html(category) << "</a></span>\n";
@@ -330,9 +343,39 @@ std::string generate_preview_html(const std::string& title, const std::string& s
     ss << "    <p class=\"text-gray-700 leading-relaxed mb-6\">\n";
     ss << "        " << escape_html(summary) << "...\n";
     ss << "    </p>\n";
-    ss << "    <a href=\"" << html_filename << "\" class=\"inline-block bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-colors\">阅读全文 &rarr;</a>\n";
+    ss << "    <a href=\"article/" << html_filename << "\" class=\"inline-block bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-colors\">阅读全文 &rarr;</a>\n";
     ss << "</article>\n\n";
     return ss.str();
+}
+
+std::string create_summary(const std::string& full_content) {
+    std::string summary;
+    std::istringstream content_stream(full_content);
+    std::string line;
+    while (summary.length() < 200 && std::getline(content_stream, line)) {
+        size_t first = line.find_first_not_of(" \t\r\n");
+        if (std::string::npos == first) continue;
+        line = line.substr(first);
+
+        if (line.empty() || line[0] == '#' || line.rfind("```", 0) == 0 || line.rfind("$$", 0) == 0 || (line.length() >= 3 && (line.find_first_not_of('-') == std::string::npos || line.find_first_not_of('*') == std::string::npos))) {
+            continue;
+        }
+        summary.append(line).append(" ");
+    }
+
+    if (summary.length() > 150) {
+        size_t cut_pos = 0;
+        int char_count = 0;
+        const int char_limit = 75;
+        for (size_t i = 0; i < summary.length() && char_count < char_limit; ++i) {
+            if ((summary[i] & 0xC0) != 0x80) { 
+                char_count++;
+            }
+            cut_pos = i + 1;
+        }
+        summary = summary.substr(0, cut_pos);
+    }
+    return summary;
 }
 
 void process_single_file() {
@@ -422,21 +465,16 @@ void process_batch() {
 
         std::string title;
         std::getline(content_file, title);
-        if (title.empty()) {
-            title = filename; // Fallback title
-        }
+        if (title.empty()) { title = filename; }
         
-        // 读取剩余的全部内容
         std::stringstream content_ss;
         content_ss << content_file.rdbuf();
         std::string full_content_string = content_ss.str();
         content_file.close();
 
-        // 为解析和摘要创建独立的流
         std::istringstream content_to_parse(full_content_string);
         std::string parsed_content = parse_content_to_html(content_to_parse);
 
-        // Generate files
         std::string base_filename = filename.substr(0, filename.length() - 4);
         std::string output_filename = base_filename + ".html";
 
@@ -465,10 +503,6 @@ void process_batch() {
                 color_index++;
             }
         }
-        if (first_tag.empty() && !default_tags.empty()){
-             // in case there's only one tag
-             first_tag = default_tags.substr(default_tags.find_first_not_of(" \t"));
-        }
         category_html = "<span>分类：<a href=\"#\" class=\"text-purple-600 hover:underline\">" + escape_html(first_tag.empty() ? "未分类" : first_tag) + "</a></span>";
 
         std::string final_html = HTML_TEMPLATE;
@@ -486,42 +520,13 @@ void process_batch() {
         output_file << final_html;
         output_file.close();
         
-        // --- 修正：智能生成摘要 ---
-        std::string summary;
-        std::istringstream summary_stream(full_content_string);
-        std::string line;
-        while(summary.length() < 150 && std::getline(summary_stream, line)) {
-            // Trim whitespace
-            size_t first = line.find_first_not_of(" \t\r\n");
-            if (std::string::npos == first) continue;
-            size_t last = line.find_last_not_of(" \t\r\n");
-            line = line.substr(first, (last - first + 1));
-            
-            // Skip non-content lines
-            if (line.empty() || line[0] == '#' || line.rfind("```", 0) == 0 || line.rfind("$$", 0) == 0 || (line.length() >= 3 && (line.find_first_not_of('-') == std::string::npos || line.find_first_not_of('*') == std::string::npos))) {
-                continue;
-            }
-            summary.append(line).append(" ");
-        }
-
-        if(summary.length() > 150){
-            // Safe UTF-8 truncate
-            size_t byte_count = 0;
-            size_t char_count = 0;
-            const size_t char_limit = 75;
-            for(byte_count = 0; char_count < char_limit && byte_count < summary.length(); ++byte_count){
-                if((summary[byte_count] & 0xC0) != 0x80){
-                    char_count++;
-                }
-            }
-            summary = summary.substr(0, byte_count);
-        }
+        std::string summary = create_summary(full_content_string);
         all_previews_ss << generate_preview_html(title, summary, date_str, first_tag.empty() ? "未分类" : first_tag, output_filename);
 
         std::cout << "  - 已成功生成: " << output_filename << "\n";
     }
 
-    std::string preview_filename = "`[index]previews_for_index.html";
+    std::string preview_filename = "`[pre-index.html]previews_for_index.html";
     std::ofstream preview_file(preview_filename);
     preview_file << all_previews_ss.str();
     preview_file.close();
@@ -555,3 +560,4 @@ int main() {
 
     return 0;
 }
+
