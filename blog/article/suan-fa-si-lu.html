@@ -63,8 +63,7 @@
                     <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
                         <h3 class="text-xl font-bold mb-4 border-b pb-2">文章标签</h3>
                         <div class="flex flex-wrap gap-2">
-                           <a href="#" class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-indigo-200 transition-colors">算法题解</a>
-
+                           
                         </div>
                     </div>
                     <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
@@ -80,63 +79,74 @@
                 <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
                 <h1 class="text-4xl font-bold mb-4 text-gray-900">算法思路</h1>
                 <div class="text-gray-500 mb-8 border-b pb-4">
-                    <span>发布于：2023年10月04日</span> | 
+                    <span>发布于：2025年09月20日</span> | 
                     <span>作者：Alexxtl</span> | 
-                    <span>分类：<a href="#" class="text-purple-600 hover:underline">算法题解</a></span>
+                    <span>分类：<a href="#" class="text-purple-600 hover:underline">未分类</a></span>
                 </div>
                 <article class="prose prose-lg max-w-none text-gray-800">
-<h2 class="text-2xl font-bold mt-8 mb-4">[更好的阅读体验](https://www.cnblogs.com/Alexxtl/p/17743113.html)</h2>
-<p># 算法思路</p>
+<h2 class="text-2xl font-bold mt-8 mb-4"><a href="https://www.cnblogs.com/Alexxtl/p/17743113.html" class="text-indigo-600 hover:underline" target="_blank">更好的阅读体验</a></h2>
+<h1 class="text-3xl font-bold mt-10 mb-5">算法思路</h1>
 <p><strong>一、多组查询</strong></p>
 <p>· 考虑如何利用已知信息避免重复查询。</p>
 <p>· 考虑各种预处理，例如前缀和。</p>
-<p>------------</p>
+<hr class="my-8 border-gray-300">
 <p><strong>二、规模减小</strong></p>
 <p>· 考虑树、链等</p>
-<p>------------</p>
+<hr class="my-8 border-gray-300">
 <p><strong>三、以小见大</strong></p>
 <p>· 考虑特殊情况，并考虑以此为基础继续转移</p>
-<p>------------</p>
+<hr class="my-8 border-gray-300">
 <p><strong>四、模拟优化</strong></p>
 <p>· 考虑高维复杂度算法，并考虑尽可能优化</p>
-<p>------------</p>
+<hr class="my-8 border-gray-300">
 <p><strong>五、题面信息</strong></p>
 <p>· 数据规模</p>
-<p>$$</p>
-<p>n≥10^8:O(\log n) \text{或} O(1) \text{，包括找规律、矩阵乘法、快速幂、打表、找数据规律、数论等}</p>
-<p>$$</p>
-<p>$$</p>
-<p>n≤10^6:O(n) \text{（有时可以考虑} O(n \log n) \text{的）} \text{，包括线性 dp、单调队列、单调栈、前缀和、差分等}</p>
-<p>$$</p>
-<p>$$</p>
-<p>n≤10^5:O(n \log n) \text{或} O(n \log^2 n) \text{，包括线段树、平衡树等树形数据结构、dijkstra、Kruskal 等}</p>
-<p>$$</p>
-<p>$$</p>
-<p>n≤10^3:O(n^2) \text{，包括大多数 dp 还有 prim 等}</p>
-<p>$$</p>
-<p>$$</p>
-<p>n≤300:O(n^3) \text{，包括高维 dp，floyd 等}</p>
-<p>$$</p>
-<p>$$</p>
-<p>n≤70:O(n^4) \text{，一般是 dp，或许可以尝试下搜索}</p>
-<p>$$</p>
-<p>$$</p>
-<p>n≤20:(2^n) \text{，包括暴搜，状压 dp，各类二进制算法等}</p>
-<p>$$</p>
-<p>$$</p>
-<p>n≤10:O(n!) \text{，一般是暴搜}</p>
-<p>$$</p>
+<p>$$
+n≥10^8:O(\log n) \text{或} O(1) \text{，包括找规律、矩阵乘法、快速幂、打表、找数据规律、数论等}
+$$
+</p>
+<p>$$
+n≤10^6:O(n) \text{（有时可以考虑} O(n \log n) \text{的）} \text{，包括线性 dp、单调队列、单调栈、前缀和、差分等}
+$$
+</p>
+<p>$$
+n≤10^5:O(n \log n) \text{或} O(n \log^2 n) \text{，包括线段树、平衡树等树形数据结构、dijkstra、Kruskal 等}
+$$
+</p>
+<p>$$
+n≤10^3:O(n^2) \text{，包括大多数 dp 还有 prim 等}
+$$
+</p>
+<p>$$
+n≤300:O(n^3) \text{，包括高维 dp，floyd 等}
+$$
+</p>
+<p>$$
+n≤70:O(n^4) \text{，一般是 dp，或许可以尝试下搜索}
+$$
+</p>
+<p>$$
+n≤20:(2^n) \text{，包括暴搜，状压 dp，各类二进制算法等}
+$$
+</p>
+<p>$$
+n≤10:O(n!) \text{，一般是暴搜}
+$$
+</p>
 <p>· 特殊信息</p>
-<p>$$</p>
-<p>\text{各种二：二分图、二进制差分等}</p>
-<p>$$</p>
-<p>$$</p>
-<p>\text{n 次以内无解：迭代加深搜索}</p>
-<p>$$</p>
-<p>$$</p>
-<p>\text{图论 + k 条路优化：分层图}</p>
-<p>$$</p>
-<p>------------</p>
+<p>$$
+\text{各种二：二分图、二进制差分等}
+$$
+</p>
+<p>$$
+\text{n 次以内无解：迭代加深搜索}
+$$
+</p>
+<p>$$
+\text{图论 + k 条路优化：分层图}
+$$
+</p>
+<hr class="my-8 border-gray-300">
 <p><strong>参考资料：</strong></p>
 <p><strong><a href="https://www.luogu.com.cn/user/764944" class="text-indigo-600 hover:underline" target="_blank">zhzkiller</a>-<a href="https://www.luogu.com.cn/blog/zhzkiller/zsd-everything" class="text-indigo-600 hover:underline" target="_blank">《【知识点】关于综合》</a></strong></p>
 <p><strong><a href="https://www.luogu.com.cn/user/764944" class="text-indigo-600 hover:underline" target="_blank">zhzkiller</a>-<a href="https://www.luogu.com.cn/blog/zhzkiller/something" class="text-indigo-600 hover:underline" target="_blank">《【备忘录】》</a></strong></p>

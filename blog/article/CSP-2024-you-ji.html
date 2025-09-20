@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HACSP补测游记 - 我的个人博客</title>
+    <title>CSP 2024 游记 - 我的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,52 +77,31 @@
             </aside>
             <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card">
                 <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
-                <h1 class="text-4xl font-bold mb-4 text-gray-900">HACSP补测游记</h1>
+                <h1 class="text-4xl font-bold mb-4 text-gray-900">CSP 2024 游记</h1>
                 <div class="text-gray-500 mb-8 border-b pb-4">
                     <span>发布于：2025年09月20日</span> | 
                     <span>作者：Alexxtl</span> | 
                     <span>分类：<a href="#" class="text-purple-600 hover:underline">未分类</a></span>
                 </div>
                 <article class="prose prose-lg max-w-none text-gray-800">
-<h1 class="text-3xl font-bold mt-10 mb-5">J组：</h1>
-<p>早上7：30准时到达，和 fzy 一起进的考场，感觉良好</p>
-<p>打开电脑，轻车熟路地安装好了 Dev cpp，往缺省源里打了一个快读的板子。8：30 给了解压缩密码下载了试题，浏览了一下发现都非常可做，决定按顺序开题。</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T1：</h2>
-<p>非常简单，和 <a href="https://www.luogu.com.cn/problem/P1765" class="text-indigo-600 hover:underline" target="_blank">P1765</a> 基本一样，只要打个表就好。</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T2：</h2>
-<p>给 $n$ 种物品。每个物品有相对应的值，然后再给一个只含有 $0、1$ 的 $b$ 数组，$1$ 代表已选中。现在再选 $k$ 种连续的物品，使得被选中的物品数量之和最大（包括已选中的），将最大值输出。</p>
-<p>这题只需要用前缀和就好，并没有什么难度</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T3：</h2>
-<p>给一个 $n×m$ 的矩阵，每个位置上无非就是 $U,D,L,R$ 四个字母，意思是到达位置就会向上、下、左、右走。走出界外就回不来了，求矩阵中从多少个位置出发可以到达右下角。右下角字母一定是 $O$。</p>
-<p>考场上开始想的是从左上角开始 DFS，但感觉会超时，于是改成了从右下角开始，预计时间复杂度没有问题。</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T4：</h2>
-<p>国际象棋的走法，$Q$ 代表王后，$R$ 代表城堡（车），$N$ 代表骑士（马），K代表国王，$P$ 代表卒子，$B$ 代表主教（象）。</p>
-<p>多组数据，每组一个字符串包含以上 $6$ 种字符，再给定两组坐标，一组起点，一组终点，字符串代表可以用其中一种棋子的走法来从起点走到终点，输出最小的步数，如果走不到输出 $-1$。</p>
-<p>输入：</p>
-<pre><code class="language-plain">1
-
-P
-
-4 4 2 4
-</code></pre>
-<p>输出：</p>
-<pre><code class="language-plain">2
-</code></pre>
-<p>题目不是很难，但是因为我太蒻了，只推出了 $60$ 分的部分分，其中还有 $35$ 分写挂了，喜提 $25$ 分。</p>
-<p>有 $Q$ 无 $N$ 可先判断 $K$ 能否一步走到，否则两步。</p>
-<p>只有 $B$ 可判断目标点是否为 $B$ 可覆盖到范围，具体判断方法很简单，这里不多说了，是则输出 $1$ 或 $2$，否则输出 $-1$。</p>
-<p>如有 $B$、$N$ 则在只有 $B$ 的基础上特判 $N$ 能否以不到并将其他输出 $-1$ 改为输出 $3$。</p>
-<p>只有 $K$、$P$ 可视作只有 $K$，取 $x$ 坐标差与 $y$ 坐标差中的最大值即可。</p>
-<p>只有 $P$ 看目标点是否在起始点上方，是则为 $y$ 坐标差，否则输出 $-1$。</p>
-<p>（<del>剩下的考场上没想出来于是考后就咕了</del>）</p>
-<p>预期得分：$25$</p>
-<p>预期总分：$100+100+100+25=325$</p>
-<p>实际总分：$100+100+100+25=325$</p>
-<h1 class="text-3xl font-bold mt-10 mb-5">S组</h1>
-<p><del>咕咕咕</del></p>
+<h2 class="text-2xl font-bold mt-8 mb-4"><a href="https://www.cnblogs.com/Alexxtl/p/18500277" class="text-indigo-600 hover:underline" target="_blank">更好的阅读体验</a></h2>
+<hr class="my-8 border-gray-300">
+<h2 class="text-2xl font-bold mt-8 mb-4">day 0</h2>
+<p>在机房摆烂了一天。</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">day 1</h2>
+<p>13:30 到了考点，想睡一会发现睡不着。</p>
+<p>想面基 fzy，但他已经进考场了，没面到。</p>
+<p>14:10 左右进的考场。这考场的环境真的抽象。</p>
+<p>开考 10 min 终于把编译器调完了。</p>
+<p>又过了 10 min 把 T1 秒了。</p>
+<p>随后看了看 T2，发现有一些思路，打了半小时后测了一下样例结果没过，发现是题读错了，于是先扔了。</p>
+<p>又看了一会 T3，半小时写完了一个 $O(n^2)$ 的 dp，测了一下发现又没过样例，调了一小时才发现是多测没清空。难绷。</p>
+<p>看了看 T4，没什么思路，又回去看 T2。重新读了一遍题之后会了一个 60 分的做法，写了半小时发现还是不对，调了一小时也没发现哪里有问题。此时只剩 20 min 了，放弃调代码去写了个 20 分的暴力 dfs。结果还是没能过样例？调到结束都没能调出来。</p>
+<p>最终估分 100 + 0 + 50 + 0 = 150。</p>
+<p>考完后才发现 pct 坐我右前方，wjl 坐我左前方。wjl 似乎是把 T2 A了，orz。</p>
+<p>出场一问，ghz 250，wxy 210。zyb 384。</p>
+<p>只有我没上 200。只有我 T2 没分。喜提机房倒一。</p>
+<p>算了，毁灭罢，赶紧的。</p>
 
                 </article>
             </main>

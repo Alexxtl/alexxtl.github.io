@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HACSP补测游记 - 我的个人博客</title>
+    <title>CF369D Valera and Fools 题解 - 我的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,52 +77,123 @@
             </aside>
             <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card">
                 <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
-                <h1 class="text-4xl font-bold mb-4 text-gray-900">HACSP补测游记</h1>
+                <h1 class="text-4xl font-bold mb-4 text-gray-900">CF369D Valera and Fools 题解</h1>
                 <div class="text-gray-500 mb-8 border-b pb-4">
                     <span>发布于：2025年09月20日</span> | 
                     <span>作者：Alexxtl</span> | 
                     <span>分类：<a href="#" class="text-purple-600 hover:underline">未分类</a></span>
                 </div>
                 <article class="prose prose-lg max-w-none text-gray-800">
-<h1 class="text-3xl font-bold mt-10 mb-5">J组：</h1>
-<p>早上7：30准时到达，和 fzy 一起进的考场，感觉良好</p>
-<p>打开电脑，轻车熟路地安装好了 Dev cpp，往缺省源里打了一个快读的板子。8：30 给了解压缩密码下载了试题，浏览了一下发现都非常可做，决定按顺序开题。</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T1：</h2>
-<p>非常简单，和 <a href="https://www.luogu.com.cn/problem/P1765" class="text-indigo-600 hover:underline" target="_blank">P1765</a> 基本一样，只要打个表就好。</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T2：</h2>
-<p>给 $n$ 种物品。每个物品有相对应的值，然后再给一个只含有 $0、1$ 的 $b$ 数组，$1$ 代表已选中。现在再选 $k$ 种连续的物品，使得被选中的物品数量之和最大（包括已选中的），将最大值输出。</p>
-<p>这题只需要用前缀和就好，并没有什么难度</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T3：</h2>
-<p>给一个 $n×m$ 的矩阵，每个位置上无非就是 $U,D,L,R$ 四个字母，意思是到达位置就会向上、下、左、右走。走出界外就回不来了，求矩阵中从多少个位置出发可以到达右下角。右下角字母一定是 $O$。</p>
-<p>考场上开始想的是从左上角开始 DFS，但感觉会超时，于是改成了从右下角开始，预计时间复杂度没有问题。</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T4：</h2>
-<p>国际象棋的走法，$Q$ 代表王后，$R$ 代表城堡（车），$N$ 代表骑士（马），K代表国王，$P$ 代表卒子，$B$ 代表主教（象）。</p>
-<p>多组数据，每组一个字符串包含以上 $6$ 种字符，再给定两组坐标，一组起点，一组终点，字符串代表可以用其中一种棋子的走法来从起点走到终点，输出最小的步数，如果走不到输出 $-1$。</p>
-<p>输入：</p>
-<pre><code class="language-plain">1
+<p><a href="https://www.cnblogs.com/Alexxtl/p/18294941" class="text-indigo-600 hover:underline" target="_blank"><strong>更好的阅读体验</strong></a></p>
+<h2 class="text-2xl font-bold mt-8 mb-4">题目链接</h2>
+<p><a href="https://www.luogu.com.cn/problem/CF369D" class="text-indigo-600 hover:underline" target="_blank"><strong>Luogu</strong></a></p>
+<p><a href="https://codeforces.com/problemset/problem/369/D" class="text-indigo-600 hover:underline" target="_blank"><strong>Codeforces</strong></a></p>
+<h2 class="text-2xl font-bold mt-8 mb-4">题意简述</h2>
+<p>有 $n$ 个人站成一排，每人手中有 $k$ 发子弹，每次每人会向除自己外编号最小的人开枪，第 $i$ 个人开枪的命中率为 $p_i \%$，剩余最多一人时结束，问有多少种可能的局面。</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">解法说明</h2>
+<p>从题目要求中可以发现，每次一定是编号最小的人向编号第二小的人开枪，其余人向编号最小的人开枪，也就是说，每次只有编号最小和第二小的两个人受到枪击。</p>
+<p>故对于每一轮，我们可以设此时编号最小的和第二小的人分别为 $x,y$，令 $f_{x,y}$ 表示转移到 $x,y$ 所需要的步数（即消耗的子弹数）则会有以下四种情况：</p>
+<ul class="list-disc pl-5 my-4">
+<li><strong>两人都未被击中</strong></li>
+</ul>
+<p>未发生变化，忽略。</p>
+<ul class="list-disc pl-5 my-4">
+<li><strong>$x$ 被击中，而 $y$ 幸存</strong></li>
+</ul>
+<p>此时如满足 $p_x<100$（否则 $y$ 必然被击中）且 $\exists i \in [y,n], p_i>0$（否则 $x$ 无法被击中），则转移到 $f_{y,y+1}$；</p>
+<ul class="list-disc pl-5 my-4">
+<li><strong>$x$ 幸存，而 $y$ 被击中</strong></li>
+</ul>
+<p>此时如满足 $p_x>0$（否则 $y$ 无法被击中）且 $\forall i \in [y,n], p_i \ne 0$（否则 $x$ 必然被击中），则转移到 $f_{x,y+1}$；</p>
+<ul class="list-disc pl-5 my-4">
+<li><strong>$x$ 与 $y$ 都被击中</strong></li>
+</ul>
+<p>此时如满足 $p_x>0$（否则 $y$ 无法被击中）且 $\exists i \in [y,n], p_i>0$（否则 $x$ 无法被击中），则转移到 $f_{y+1,y+2}$。</p>
+<p>剩余细节详见下面代码中的注释。</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">通过代码</h2>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define PII pair&lt;int,int&gt;
+#define mp make_pair
+const int N=3010;
 
-P
+int n,k,p[N],f[N][N],ans;//ans表示可能的局面的数量
+bool Genshin[N],Impact[N];//Genshin[i]表示j取[i,n]中任意值时时是否有p[i]&gt;0,Impact[i]表示j取[i,n]中任意值时时是否有p[i]=100
+queue&lt;PII&gt; q;
 
-4 4 2 4
+inline int read(){
+    int x=0,f=1;
+    char ch=getchar();
+    while(ch&lt;&apos;0&apos;||ch&gt;&apos;9&apos;){
+        if(ch==&apos;-&apos;){
+            f=-1;
+        }
+        ch=getchar();
+    }
+    while(ch&gt;=&apos;0&apos;&amp;&amp;ch&lt;=&apos;9&apos;){
+        x=(x&lt;&lt;1)+(x&lt;&lt;3)+(ch^48);
+        ch=getchar();
+    }
+    return x*f;
+}//快读 
+
+inline void write(int x){
+    if(x&lt;0){
+        putchar(&apos;-&apos;);
+        x=-x;
+    }
+    if(x&gt;9){
+        write(x/10);
+    }
+    putchar(x%10+&apos;0&apos;);
+}//快写 
+
+int main(){
+    n=read(),k=read();
+    for(int i=1;i&lt;=n;i++){
+        p[i]=read();
+    }
+    for(int i=n;i&gt;=1;i--){
+        if(Genshin[i+1]||p[i]&gt;0){ 
+            Genshin[i]=1;
+        }//预处理出Genshin[i]
+        if(Impact[i+1]||p[i]==100){
+            Impact[i]=1; 
+        }//预处理出Impact[i]
+    }
+    q.push(mp(1,2));
+    while(!q.empty()){
+        int x=q.front().first,y=q.front().second;
+        q.pop();
+        if(y&gt;n||f[x][y]&gt;=k){
+            continue;
+        }//跳过无法转移的情况（剩余人数不大于1或子弹耗尽） 
+        if(Genshin[y]&amp;&amp;p[x]!=100){
+            if(!f[y][y+1]){
+                f[y][y+1]=f[x][y]+1;
+                ans++;
+                q.push(mp(y,y+1));
+            }
+        }//x被击中，y幸存 
+        if(!Impact[y]&amp;&amp;p[x]&gt;0){
+            if(!f[x][y+1]){
+                f[x][y+1]=f[x][y]+1;
+                ans++;
+                q.push(mp(x,y+1));
+			}
+        }//x幸存，y被击中 
+        if(Genshin[y]&amp;&amp;p[x]&gt;0){
+            if(!f[y+1][y+2]){
+                f[y+1][y+2]=f[x][y]+1;
+                ans++;
+                q.push(mp(y+1,y+2));
+            }
+        }//x与y都被击中 
+    }
+    write(ans+1);//答案要加处在状态(1,2)时的情况 
+    return 0;
+}
 </code></pre>
-<p>输出：</p>
-<pre><code class="language-plain">2
-</code></pre>
-<p>题目不是很难，但是因为我太蒻了，只推出了 $60$ 分的部分分，其中还有 $35$ 分写挂了，喜提 $25$ 分。</p>
-<p>有 $Q$ 无 $N$ 可先判断 $K$ 能否一步走到，否则两步。</p>
-<p>只有 $B$ 可判断目标点是否为 $B$ 可覆盖到范围，具体判断方法很简单，这里不多说了，是则输出 $1$ 或 $2$，否则输出 $-1$。</p>
-<p>如有 $B$、$N$ 则在只有 $B$ 的基础上特判 $N$ 能否以不到并将其他输出 $-1$ 改为输出 $3$。</p>
-<p>只有 $K$、$P$ 可视作只有 $K$，取 $x$ 坐标差与 $y$ 坐标差中的最大值即可。</p>
-<p>只有 $P$ 看目标点是否在起始点上方，是则为 $y$ 坐标差，否则输出 $-1$。</p>
-<p>（<del>剩下的考场上没想出来于是考后就咕了</del>）</p>
-<p>预期得分：$25$</p>
-<p>预期总分：$100+100+100+25=325$</p>
-<p>实际总分：$100+100+100+25=325$</p>
-<h1 class="text-3xl font-bold mt-10 mb-5">S组</h1>
-<p><del>咕咕咕</del></p>
 
                 </article>
             </main>

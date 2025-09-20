@@ -1,0 +1,91 @@
+AT_abc396_e [ABC396E] Min of Restricted Sum 题解
+
+## 题目链接
+
+[**Luogu**](https://www.luogu.com.cn/problem/AT_abc396_e)
+
+[**Atcoder**](https://atcoder.jp/contests/abc396/tasks/abc396_e)
+
+## 题意简述
+
+#### 问题陈述
+
+给你整数 $N, M$ 和长度为 $M$ 的三个整数序列： $X = (X_1, X_2, \ldots, X_M)$ 、 $Y = (Y_1, Y_2, \ldots, Y_M)$ 和 $Z = (Z_1, Z_2, \ldots, Z_M)$ 。保证 $X$ 和 $Y$ 中的所有元素都在 $1$ 和 $N$ 之间。
+
+我们称长度为 $N$ 的非负整数序列 $A = (A_1, A_2, \ldots, A_N)$ 为**好序列**，当且仅当它满足以下条件时：
+
+- 对于 $i$ 与 $1 \le i \le M$ 的每一个整数， $A_{X_i}$ 与 $A_{Y_i}$ 的 XOR 为 $Z_i$ 。
+
+确定是否存在一个好序列 $A=(A_1,A_2,\ldots,A_N)$ ，如果存在，找出一个使其元素之和 $\displaystyle \sum_{i=1}^N A_i$ 最小的好序列。
+
+## 解法说明
+
+首先考虑如何判断是否存在好序列。注意到题目中给了许多约束，可以将这些约束关系转化为边，然后在图上进行维护。
+
+容易发现，此时图中被分割成了很多个连通块。对于每个连通块，可以将其中一个节点的权值设为 $0$，并通过约束关系推导出其他节点的权值。这样，在处理新的约束时，如果发现已有的点权与推出的结果相悖，则无解。
+
+这显然可以用带权并查集维护。具体地，每个节点的权值设置为到其父节点的异或值。对于每个约束中的两个点 $x,y$，设其权值为 $a_x$ 和 $a_y$，检查其是否位于同一集合内，分成两种情况进行讨论：
+
+1. $x$ 与 $y$ 在同一集合内时。由于路径压缩，二者会拥有相同的父节点。由于点权维护的是到父节点的异或值，故可将两点权值异或后判断是否与约束中的 $z$ 相等，如果不相等则无解。
+
+2. $x$ 和 $y$ 不在同一个集合内。此时需要合并两个集合。具体地，当合并两个集合时，分别记 $x$ 与 $y$ 所在集合的根节点为 $rx$ 和 $ry$。如合并后令 $rx$ 为根，则由约束关系推得合并后 $a_{rx} = a_x \oplus a_y \oplus z$。
+
+接下来处理和最小的好序列。对于每个连通块的根 $r$，则该连通块的和为块内所有点的权值分别与 $a_r$ 相异或后的和。可以分别处理每个二进制位，统计该连通块中每个 $a_x$ 该位上为 $1$ 的个数，记为 $cnt$。设 $k$ 为该连通块内节点的总个数，则如果 $k-cnt > cnt$ 则根的该位为 $0$，否则为 $1$。
+
+## 通过代码
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+#define int long long
+const int N=2e5+10;
+
+namespace IO{
+	inline int read(){ int x=0,f=1;char ch=getchar(); while(ch<'0'||ch>'9'){ if(ch=='-') f=-1; ch=getchar(); } while(ch>='0'&&ch<='9') x=(x<<1)+(x<<3)+(ch^48),ch=getchar(); return x*f; }
+	inline void write(int x){ if(x<0) putchar('-'),x=-x; if(x>9) write(x/10); putchar(x%10+'0'); }
+}using namespace IO;
+
+namespace code{
+	int n,m,a[N],fa[N],cnt[31],ans[N],num;
+	vector<int> v[N];
+	
+	int getfa(int x){
+		if(fa[x]==x) return x;
+		int r=getfa(fa[x]);
+		a[x]^=a[fa[x]],fa[x]=r;
+		return r;
+	}
+
+	void solve(){
+		n=read(),m=read();
+		for(int i=1;i<=n;++i) fa[i]=i;
+		for(int i=1;i<=m;++i){
+			int x=read(),y=read(),z=read();
+			int rx=getfa(x),ry=getfa(y);
+			if(rx==ry) if((a[x]^a[y])!=z) return write(-1),void();
+			if(rx!=ry) fa[ry]=rx,a[ry]=a[x]^a[y]^z;
+		}
+		for(int i=1,j;i<=n;++i) j=getfa(i),v[j].push_back(i),ans[i]=a[i];
+		for(int i=1;i<=n;++i){
+			if(fa[i]!=i||v[i].empty()) continue;
+			memset(cnt,0,sizeof(cnt)),num=0;
+			for(auto it=v[i].begin();it<v[i].end();++it){
+				int x=*it;
+				for(int j=0;j<=30;++j) cnt[j]+=a[x]&(1<<j)?1:0;
+			}
+			for(int j=0;j<=30;++j) if(cnt[j]>v[i].size()-cnt[j]) num|=(1<<j);
+			for(auto it=v[i].begin();it<v[i].end();++it){
+				int x=*it;
+				ans[x]^=num;
+			}
+		}
+		for(int i=1;i<=n;++i) write(ans[i]),putchar(' ');
+	}
+}
+
+signed main(){
+	code::solve();
+	return 0;
+}
+```

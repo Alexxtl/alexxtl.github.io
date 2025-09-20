@@ -1,0 +1,337 @@
+CSP 2023 游记
+
+## [更好的阅读体验](https://www.cnblogs.com/Alexxtl/p/17779466.html)
+
+------------
+
+## day 0
+
+和 [printfmingren](https://www.luogu.com.cn/user/765939) 整理了一下不会的知识点，发现有点多，遂开摆
+
+~~音游真的太好玩了~~
+
+对着《算法竞赛进阶指南》复习了下对拍器的写法，把部分算法的模板又打了一遍
+
+感觉前途渺茫
+
+------------
+
+# J组
+
+## day 1
+
+进考场前碰见了 [MithrilSword_XIV](https://www.luogu.com.cn/user/387037)、[_Jarvis_](https://www.luogu.com.cn/user/585978)、[hnoi](https://www.luogu.com.cn/user/601142) 和 [weilanbb526](https://www.luogu.com.cn/user/361534)，寒暄了几句后进了考场
+
+看了看，怎么同班的 [suojingxin123](https://www.luogu.com.cn/user/633230) 神犇坐我旁边啊
+
+考场上 T1 找了半天规律，最后发现直接暴力就行了（我甚至为这道题对拍了一下）
+
+T2 也很简单，每次遇到价格更低的就更新一下就好了
+ 
+T3 大模拟，不好评价，花了一个多小时写了 100 多行过了大样例
+
+T4 对于 $k=0$ 且 $a_i=0$ 的情况可以直接最短路，其他情况考场上没时间想了，输出 $-1$ 跑路
+
+出考场一问人均200多，[Cz_HUV](https://www.luogu.com.cn/user/461956) 说他拿了 320，%%%
+
+## day 2
+
+突然发现欸我T1怎么忘加了一个判断，100 -> 0（所以我对拍怎么过的？）
+
+ T2 不知道怎么挂了 35（小图灵）（可能是没开 long long），100 -> 65 
+ 
+T3 过了（~~关于我 T1 0 分但 T3 100 分这件事~~）
+
+T4 小图灵 20 分，不知道怎么回事
+
+结果 310 -> 185（小图灵）
+
+麻了
+
+## day n
+
+出成绩了。
+
+T1 给了 20
+
+T2 只给了 50 分，什么时候 CCF 数据这么强了？
+
+T3 AC 了
+
+T4 15 分，意料之内
+
+总分 185 分，和小图灵一样。
+
+### 既然如此，毁灭罢，赶紧的！
+
+------------
+
+
+# S 组
+
+## day 1
+
+进考场一眼就看到了 zzsz 的几位巨佬（[AnEasySong](https://www.luogu.com.cn/user/764957) 穿着校服真的好显眼），发现 [yewei15516922573](https://www.luogu.com.cn/user/765091) 和 [114514wxy](https://www.luogu.com.cn/user/602361) 怎么带着行李箱啊，不理解
+
+然后和 [Leowang2009](https://www.luogu.com.cn/user/696106) 一起进了考点，发现和 [DSG_Shadow](https://www.luogu.com.cn/user/542286) 还有 [huanghezhe](https://www.luogu.com.cn/user/654636) 学长一个考场，激动
+
+开题先看 T1，发现顶多橙题，直接一个暴力完事，估计能拿 100 分
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+const int N=1e5+10;
+
+int n,num[N],ans;
+
+inline int read(){
+	int x=0,f=1;
+	char ch=getchar();
+	while(ch<'0'||ch>'9'){
+		if(ch=='-'){
+			f=-1;
+		}
+		ch=getchar();
+	}
+	while(ch>='0'&&ch<='9'){
+		x=(x<<1)+(x<<3)+(ch^48);
+		ch=getchar();
+	}
+	return x*f;
+}
+
+inline void write(int x){
+	if(x<0){
+		putchar('-');
+		x=-x;
+	}
+	if(x>9){
+		write(x/10);
+	}
+	putchar(x%10+'0');
+}
+
+int cl(int x){
+	if(x<0){
+		return x+10;
+	}
+	if(x>=10){
+		return x-10;
+	}
+}
+
+int az(int a,int b,int c,int d,int e){
+	return a*10000+b*1000+c*100+d*10+e;
+}
+
+int main(){
+	freopen("lock.in","r",stdin);
+	freopen("lock.out","w",stdout);
+	n=read();
+	for(int i=1;i<=n;i++){
+		int a=read(),b=read(),c=read(),d=read(),e=read();
+		for(int j=1;j<=9;j++){
+			num[az(cl(a+j),b,c,d,e)]++;
+			num[az(a,cl(b+j),c,d,e)]++;
+			num[az(a,b,cl(c+j),d,e)]++;
+			num[az(a,b,c,cl(d+j),e)]++;
+			num[az(a,b,c,d,cl(e+j))]++;
+			num[az(cl(a+j),cl(b+j),c,d,e)]++;
+			num[az(a,cl(b+j),cl(c+j),d,e)]++;
+			num[az(a,b,cl(c+j),cl(d+j),e)]++;
+			num[az(a,b,c,cl(d+j),cl(e+j))]++;
+		}
+	}
+	for(int i=0;i<=99999;i++){
+		if(num[i]==n){
+			ans++;
+		}
+	}
+	write(ans);
+	fclose(stdin);
+	fclose(stdout);
+	return 0;
+}
+```
+
+T2 出来后听说，写了一个 $O(n^3)$ 的区间 dp，预估 35 分，[cwl](https://www.luogu.com.cn/user/761669) 直接薄纱紫题，%%% [cwl](https://www.luogu.com.cn/user/761669)
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+
+int n;
+ll ans;
+bool f[1010][1010];
+string s;
+
+inline int read(){
+	int x=0,f=1;
+	char ch=getchar();
+	while(ch<'0'||ch>'9'){
+		if(ch=='-'){
+			f=-1;
+		}
+		ch=getchar();
+	}
+	while(ch>='0'&&ch<='9'){
+		x=(x<<1)+(x<<3)+(ch^48);
+		ch=getchar();
+	}
+	return x*f;
+}
+
+inline void write(ll x){
+	if(x<0){
+		putchar('-');
+		x=-x;
+	}
+	if(x>9){
+		write(x/10);
+	}
+	putchar(x%10+'0');
+}
+
+void solve1(){
+	for(int len=2;len<=n;len+=2){
+		for(int l=1;l+len-1<=n;l++){
+			int r=l+len-1;
+			if(l==r-1){
+				if(s[l-1]==s[r-1]){
+					f[l][r]=1;
+				}
+				continue;
+			}
+			if(s[l-1]==s[r-1]){
+				if(f[l+1][r-1]){
+					f[l][r]=1;
+				}
+			}else{
+				for(int i=l+1;i<=r-2;i++){
+					if(f[l][i]&&f[i+1][r]){
+						f[l][r]=1;
+					}
+				}
+			}
+		}
+	}
+	for(int i=1;i<n;i++){
+		for(int j=i+1;j<=n;j++){
+			if(f[i][j]){
+				ans++;
+			}
+		}
+	}
+	write(ans);
+}
+
+int main(){
+	freopen("game.in","r",stdin);
+	freopen("game.out","w",stdout);
+	n=read();
+	cin>>s;
+	if(n<=800){
+		solve1();
+	}
+	fclose(stdin);
+	fclose(stdout);
+	return 0;
+}
+```
+
+
+T3 一看大模拟（~~CCF nmsl~~），做完花了一个多小时，结果最后十分钟发现题读错了，$op=1$ 时我以为要建一个结构体，但其实只是定义罢了，但也没时间改了，于是 100 -> 15
+
+代码就不放了，太长了
+
+T4 对于 A 性质打了一个优先队列 BFS，估分35
+
+最终估分 270 -> 185（应该没人挂分像我这么离谱吧）
+
+出考场发现人均 100+，但 [cwl](https://www.luogu.com.cn/user/761669) 200，[cwl](https://www.luogu.com.cn/user/761669) 真的太强了！！！
+
+听说 T2 是个原题，来自 CF 的一个题，难评。
+
+T4 出来后才发现算法假了，和 [printfmingren](https://www.luogu.com.cn/user/765939) 研究了一下发现需要加一些条件处理一下后面的区域，于是 35 -> 0
+
+于是 185 -> 150，惨惨惨（应该没人挂分像我这么离谱吧）
+
+感觉这次 T1 太过简单，T2 区间 dp 太过显然，区分度太低，应该能人均 135，一等悬了
+
+## day 2
+
+T1 全 RE 了
+
+在
+
+```cpp
+int cl(int x){
+	if(x<0){
+		return x+10;
+	}
+	if(x>=10){
+		return x-10;
+	}
+}
+```
+
+中加了一行 ```return x``` 后变成
+
+```cpp
+int cl(int x){
+	if(x<0){
+		return x+10;
+	}
+	if(x>=10){
+		return x-10;
+	}
+   return x;
+}
+```
+
+就 AC 了，难绷
+
+T3 的 15 分也挂没了，不知道为什么
+
+150 -> 35
+
+于是最终 270 -> 35（挂掉 235 分，我还有救吗？）
+
+## day n
+
+只有 40。。。
+
+NOIP去不成了。
+
+翻不了盘了。
+
+[MithrilSword_XIV](https://www.luogu.com.cn/user/387037) 135 分
+
+[suojingxin123](https://www.luogu.com.cn/user/633230) 150 分
+
+[weilanbb526](https://www.luogu.com.cn/user/361534) 115 分
+
+机房大佬们都好强
+
+只有我考得如此的抽象
+ 
+### 既然如此，毁灭罢，赶紧的！
+
+------------
+
+# 总结
+
+难受
+
+多半是创下 OI 史最多挂分记录了吧（悲）
+
+近一年半的努力化作泡影，赛前的豪言壮语现在看已变成了笑话，冲击省队的理想还未开始便已结束
+
+已经初三了，不出意外的话这是我初中阶段最后一场 OI 比赛了，接下来就要暂时 AFO 去学 whk 了
+
+希望其他 OIER 们不要像我一样如此离谱地挂分
+
+**愿我们都有光明的前途**
+
+# THE END

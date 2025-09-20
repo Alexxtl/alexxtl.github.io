@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P3384 【模板】重链剖分/树链剖分 题解 - 我的个人博客</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <!-- MathJax 配置脚本，必须在加载 MathJax 主脚本之前 -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    
+    <style>
+        body { background-size: cover; background-position: center; background-attachment: fixed; font-family: 'Noto Sans SC', sans-serif; transition: background-image 1s ease-in-out; }
+        .card { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); border: 1px solid rgba(0,0,0,0.05); }
+        html { scroll-behavior: smooth; }
+        pre[class*="language-"] { padding: 1rem; margin: 1.5rem 0; border-radius: 0.5rem; }
+        /* 为行内代码块添加样式 */
+        :not(pre) > code {
+            background-color: #f3f4f6; /* bg-gray-100 */
+            color: #be123c; /* text-rose-700 */
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div class="container mx-auto p-4 lg:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-5xl font-bold text-gray-900 tracking-wider">Alexxtl的博客</h1>
+            <p class="text-gray-600 mt-2">记录、分享、成长</p>
+        </header>
+        <div class="flex flex-col lg:flex-row gap-8">
+            <aside class="w-full lg:w-1/4 flex-shrink-0">
+                <div class="space-y-8">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center card">
+                        <img src="images/avatar.png" alt="博主头像" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-lg">
+                        <h2 class="text-2xl font-bold">Alexxtl</h2>
+                        <p class="text-gray-600 mt-2">一个热爱技术与生活的开发者。</p>
+                        <div class="flex justify-center flex-wrap gap-x-4 gap-y-2 mt-4">
+                            <a href="https://github.com/Alexxtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">GitHub</a>
+                            <a href="https://www.luogu.com.cn/user/598187" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">Luogu</a>
+                            <a href="https://blog.csdn.net/Alexxtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">CSDN</a>
+                            <a href="https://codeforces.com/profile/Alex_xtl" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">Codeforces</a>
+                            <a href="https://atcoder.jp/users/xiaotianlin" target="_blank" class="text-gray-500 hover:text-indigo-600 transition-colors">AtCoder</a>
+                        </div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
+                        <h3 class="text-xl font-bold mb-4 border-b pb-2">文章标签</h3>
+                        <div class="flex flex-wrap gap-2">
+                           
+                        </div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
+                        <h3 class="text-xl font-bold mb-4 border-b pb-2">友情链接</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li><a href="https://blog.csdn.net/BabyFalse?type=blog" class="hover:text-indigo-600 transition-colors" target="_blank">xwj</a></li>
+                            <li><a href="https://www.cnblogs.com/MrSWdAxiv" class="hover:text-indigo-600 transition-colors" target="_blank">fzy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+            <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card">
+                <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
+                <h1 class="text-4xl font-bold mb-4 text-gray-900">P3384 【模板】重链剖分/树链剖分 题解</h1>
+                <div class="text-gray-500 mb-8 border-b pb-4">
+                    <span>发布于：2025年09月20日</span> | 
+                    <span>作者：Alexxtl</span> | 
+                    <span>分类：<a href="#" class="text-purple-600 hover:underline">未分类</a></span>
+                </div>
+                <article class="prose prose-lg max-w-none text-gray-800">
+<h2 class="text-2xl font-bold mt-8 mb-4">一、算法介绍：</h2>
+<p>树链剖分是一个在信息学竞赛中使用很频繁的算法，其通过将树分割成若干条链的形式，维护树上路径的信息。树链剖分由很多种形式，如重链剖分，长链剖分以及实链剖分等，此处只涉及重链剖分。</p>
+<p>重链剖分可以将树上任意一条路径划分成不超过 $\log n$ 条连续的链，每条链上的点深度互不相同。</p>
+<p>重链剖分能保证划分出的每条链上的节点 dfs 序连续，因此可以使用线段树等对序列进行维护的数据结构来维护树上路径的信息。除此之外，重链剖分还经常用于实现其他功能，如求最近公共祖先等。</p>
+<p>### 定义：</p>
+<ul class="list-disc pl-5 my-4">
+<li>重子节点：对于每个非叶节点，定义其子节点中<strong>子树最大</strong>的子节点（如有相同任取起义）为重子节点。</li>
+</ul>
+<ul class="list-disc pl-5 my-4">
+<li>轻子节点：对于每个非叶节点，定义其子节点中<strong>除重子节点外</strong>其余所有子节点为轻子节点。</li>
+</ul>
+<ul class="list-disc pl-5 my-4">
+<li>重边：对于每个非叶节点，定义其与其<strong>重子节点</strong>之间的边为重边。</li>
+</ul>
+<ul class="list-disc pl-5 my-4">
+<li>轻边：对于每个非叶节点，定义其与其<strong>轻子节点</strong>之间的边为轻边。</li>
+</ul>
+<ul class="list-disc pl-5 my-4">
+<li>重链：定义若干条<strong>首尾衔接</strong>的<strong>重边</strong>构成的链为重链。落单的节点也视为重链。</li>
+</ul>
+<p><strong>如图</strong>：</p>
+<p>!<a href="https://oi-wiki.org/graph/images/hld.png" class="text-indigo-600 hover:underline" target="_blank"></a></p>
+<p>（图片来自 <strong>OI Wiki</strong>）</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">二、代码实现：</h2>
+<p>树链剖分的实现由两个 <strong>dfs</strong> 构成。</p>
+<p>第一个 dfs 记录每个节点的<strong>父节点</strong>、<strong>深度</strong>、<strong>子树大小</strong>、<strong>重子节点</strong>，第二个 dfs 记录每个节点所在链的<strong>顶端</strong>，<strong>dfs 序</strong>以及 dfs 序所对应的节点的<strong>编号</strong>。</p>
+<p>以下为代码实现，细节包含在注释中：</p>
+<pre><code class="language-cpp">int fa[N],top[N],son[N],size[N],deep[N],w[N],dfn[N],cnt_tree;
+void dfs1(int x){
+	size[x]=1;//标记每个节点的子树大小，初始为 1，因为包含节点本身
+	int maxson=-1;//记录以重子节点为根的子树大小
+	for(int i=head[x];i;i=t[i].next){
+		int y=t[i].ver;
+		if(y==fa[x]) continue;
+		deep[y]=deep[x]+1,fa[y]=x,dfs1(y),size[x]+=size[y];//更新深度、子树大小、父节点等信息
+		if(maxson&lt;size[y]) maxson=size[y],son[x]=y;//维护重子节点
+	}
+}
+
+void dfs2(int x){
+	dfn[x]=++cnt_tree,w[cnt_tree]=a[x];//标记新编号并赋值到新数组中
+	if(son[x]) top[son[x]]=top[x],dfs2(son[x]);//先处理重子节点
+	for(int i=head[x];i;i=t[i].next){//按轻子节点递归处理
+		int y=t[i].ver;
+		if(y==fa[x]||y==son[x]) continue;
+		top[y]=y,dfs2(y);//每个轻子节点有一条以其为起始的链
+	}
+}
+</code></pre>
+<h2 class="text-2xl font-bold mt-8 mb-4">三、问题解决</h2>
+<p>说完了树链剖分，是时候回到本题了。</p>
+<p>容易发现，每一条重链和每一个子树中的节点的编号都是<strong>连续</strong>的。问题要求我们处理<strong>路径上</strong>与<strong>子树上</strong>的修改与查询，我们分成两类问题讨论：</p>
+<ul class="list-disc pl-5 my-4">
+<li><strong>路径上</strong>：</li>
+</ul>
+<p>  类似于<strong>倍增法求最近公共祖先</strong>的思想，两个节点不断向上跳，跳到其<strong>所在重链的顶端的父节点</strong>，每次处理所在<strong>链顶端深度更深的节点</strong>，直到跳到<strong>同一条重链</strong>上为止，沿途对每一条重链用<strong>线段树</strong>维护区间修改与查询。时间复杂度 $O(\log^2 n)$。</p>
+<ul class="list-disc pl-5 my-4">
+<li><strong>子树上</strong>：</li>
+</ul>
+<p>  由于子树的 dfs 序连续，修改或查询一个节点的子树只用处理这一段连续的 dfs 序区间，<strong>线段树</strong>维护即可。时间复杂度 $O(\log n)$。</p>
+<p>### 正确性证明：</p>
+<p>至于为什么这么做是对的，下面提供证明：</p>
+<p>令 $x$ 和 $y$ 表示两个节点，$z$ 表示 $x$ 和 $y$ 的最近公共祖先，假设 $x$ 在 $z$ 所在的重链上且 $y$ 不在，则 $y$ 一定在 $z$ 的轻子节点的子树上，显然 $y$ 所在的重链深度一定更深，所以会优先跳 $y$，直到 $y$ 跳到 $z$ 为止。如都不在 $z$ 所在的重链上，上跳时总有一个会跳到 $z$ 所在的重链上。当二者都在该链上时，直接区间维护即可。如此，显然不会更新多余的节点，也不会有节点被漏掉。</p>
+<p>### 时间复杂度：</p>
+<p>#### 1.重链数量</p>
+<p>从任意节点到根的路径上，轻边的数量不超过 $\log n$ 条，这是因为在每次经过轻边时，子树的大小至少减半，显然最多经过 $\log n$ 条轻边。因此，每个路径拆解后重链不会超过 $\log n$ 条。</p>
+<p>#### 2.单次操作复杂度分析</p>
+<p><strong>路径上操作</strong>：每条重链的区间操作通过线段树实现，复杂度为 $O(\log n)$。最多会经过 $\log n$ 条重链，故总时间复杂度为 $O(\log n) × O(\log n) = O(\log^2 n)$。</p>
+<p><strong>子树上操作</strong>：该操作只需进行一次线段树的区间修改或查询，复杂度为 $O(\log n)$。</p>
+<h2 class="text-2xl font-bold mt-8 mb-4">四、通过代码：</h2>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+#define ll long long
+#define ls(p) p&lt;&lt;1
+#define rs(p) p&lt;&lt;1|1
+const int N=1e5+10;
+
+namespace IO{//快读快写
+	inline int read(){
+		int x=0,f=1;
+		char ch=getchar();
+		while(ch&lt;&apos;0&apos;||ch&gt;&apos;9&apos;){
+			if(ch==&apos;-&apos;) f=-1;
+			ch=getchar();
+		}
+		while(ch&gt;=&apos;0&apos;&amp;&amp;ch&lt;=&apos;9&apos;) x=(x&lt;&lt;1)+(x&lt;&lt;3)+(ch^48),ch=getchar();
+		return x*f;
+	}
+
+	inline void write(int x){
+		if(x&lt;0){
+			putchar(&apos;-&apos;);
+			x=-x;
+		}
+		if(x&gt;9) write(x/10);
+		putchar(x%10+&apos;0&apos;);
+	}
+}
+
+using namespace IO;
+
+namespace code{
+	int n,m,R,P,a[N];
+	
+	int head[N],tot;
+	
+	struct edge{//链式前向星存图
+		int ver,next;
+	}e[N&lt;&lt;1];
+	
+	void add(int x,int y){//加边
+		e[++tot].ver=y,e[tot].next=head[x],head[x]=tot;
+	}
+	
+	int fa[N],son[N],deep[N],size[N],w[N],dfn[N],top[N],cnt;
+	
+	void dfs1(int x){//树剖预处理
+		size[x]=1;
+		int max_son=-1;
+		for(int i=head[x];i;i=e[i].next){
+			int y=e[i].ver;
+			if(y==fa[x]) continue;
+			fa[y]=x,deep[y]=deep[x]+1;
+			dfs1(y);
+			size[x]+=size[y];
+			if(size[y]&gt;max_son) max_son=size[y],son[x]=y;
+		}
+	}
+	
+	void dfs2(int x,int fr){
+		dfn[x]=++cnt,w[cnt]=a[x],top[x]=fr;
+		if(son[x]) dfs2(son[x],fr);
+		for(int i=head[x];i;i=e[i].next){
+			int y=e[i].ver;
+			if(y==fa[x]||y==son[x]) continue;
+			dfs2(y,y);
+		}
+	}
+	
+	struct segment_tree{//线段树
+		struct node{
+			ll sum,lazy;
+		}t[N&lt;&lt;2];
+		
+		void push_up(int p){
+			t[p].sum=(t[ls(p)].sum+t[rs(p)].sum)%P;
+		}
+		
+		void push_down(int p,int l,int r){
+			int mid=(l+r)&gt;&gt;1;
+			t[ls(p)].sum=(t[ls(p)].sum+t[p].lazy*(mid-l+1))%P,t[ls(p)].lazy=(t[ls(p)].lazy+t[p].lazy)%P;
+			t[rs(p)].sum=(t[rs(p)].sum+t[p].lazy*(r-mid))%P,t[rs(p)].lazy=(t[rs(p)].lazy+t[p].lazy)%P;
+			t[p].lazy=0;
+		}
+		
+		void build(int p,int l,int r){
+			if(l==r) return t[p].sum=w[l]%P,void();
+			int mid=(l+r)&gt;&gt;1;
+			build(ls(p),l,mid),build(rs(p),mid+1,r);
+			push_up(p);
+		}
+		
+		void add(int p,int l,int r,int al,int ar,ll k){
+			if(al&lt;=l&amp;&amp;r&lt;=ar) return t[p].sum=((ll)t[p].sum+k*(r-l+1))%P,t[p].lazy=((ll)t[p].lazy+k)%P,void();
+			int mid=(l+r)&gt;&gt;1;
+			push_down(p,l,r);
+			if(al&lt;=mid) add(ls(p),l,mid,al,ar,k);
+			if(ar&gt;mid) add(rs(p),mid+1,r,al,ar,k);
+			push_up(p);
+		}
+		
+		ll query_sum(int p,int l,int r,int ql,int qr){
+			if(ql&lt;=l&amp;&amp;r&lt;=qr) return t[p].sum;
+			ll mid=(l+r)&gt;&gt;1,ret=0;
+			push_down(p,l,r);
+			if(ql&lt;=mid) ret=((ll)ret+query_sum(ls(p),l,mid,ql,qr))%P;
+			if(qr&gt;mid) ret=((ll)ret+query_sum(rs(p),mid+1,r,ql,qr))%P;
+			return ret;
+		}
+	}t;
+	
+	void solve1(int x,int y,int z){//路径上修改
+		while(top[x]!=top[y]){
+			if(deep[top[x]]&lt;deep[top[y]]) swap(x,y);
+			t.add(1,1,n,dfn[top[x]],dfn[x],z),x=fa[top[x]];
+		}
+		if(deep[x]&gt;deep[y]) swap(x,y);
+		t.add(1,1,n,dfn[x],dfn[y],z);
+	}
+	
+	void solve2(int x,int y){//路径上查询
+		int ret=0;
+		while(top[x]!=top[y]){
+			if(deep[top[x]]&lt;deep[top[y]]) swap(x,y);
+			ret=((ll)ret+t.query_sum(1,1,n,dfn[top[x]],dfn[x]))%P,x=fa[top[x]];
+		}
+		if(deep[x]&gt;deep[y]) swap(x,y);
+		ret=(ret+t.query_sum(1,1,n,dfn[x],dfn[y]))%P;
+		write(ret),putchar(&apos;\n&apos;);
+	}
+	
+	void solve3(int x,int z){//子树上修改
+		t.add(1,1,n,dfn[x],dfn[x]+size[x]-1,z);
+	}
+	
+	void solve4(int x){//子树上查询
+		write(t.query_sum(1,1,n,dfn[x],dfn[x]+size[x]-1)),putchar(&apos;\n&apos;);
+	}
+
+	void solve(){
+		n=read(),m=read(),R=read(),P=read();
+		for(int i=1;i&lt;=n;i++) a[i]=read();
+		for(int i=1;i&lt;n;i++){
+			int x=read(),y=read();
+			add(x,y);
+			add(y,x);
+		}
+		dfs1(R),dfs2(R,R),t.build(1,1,n);
+		while(m--){
+			int op=read(),x=read(),y,z;
+			if(op==1) y=read(),z=read(),solve1(x,y,z);
+			else if(op==2) y=read(),solve2(x,y);
+			else if(op==3) z=read(),solve3(x,z);
+			else solve4(x);
+		}
+	}
+}
+
+int main(){
+	code::solve();
+	return 0;
+}
+</code></pre>
+
+                </article>
+            </main>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reliableApi = 'https://api.waifu.pics/sfw/waifu';
+            fetch(reliableApi).then(response => response.json()).then(data => {
+                const img = new Image();
+                img.src = data.url;
+                img.onload = () => { document.body.style.backgroundImage = `url('${data.url}')`; };
+            }).catch(() => { document.body.style.backgroundColor = '#f3f4f6'; });
+        });
+    </script>
+</body>
+</html>

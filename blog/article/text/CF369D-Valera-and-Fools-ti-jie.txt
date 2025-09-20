@@ -1,0 +1,124 @@
+CF369D Valera and Fools 题解
+
+[**更好的阅读体验**](https://www.cnblogs.com/Alexxtl/p/18294941)
+
+## 题目链接
+
+[**Luogu**](https://www.luogu.com.cn/problem/CF369D)
+
+[**Codeforces**](https://codeforces.com/problemset/problem/369/D)
+
+## 题意简述
+
+有 $n$ 个人站成一排，每人手中有 $k$ 发子弹，每次每人会向除自己外编号最小的人开枪，第 $i$ 个人开枪的命中率为 $p_i \%$，剩余最多一人时结束，问有多少种可能的局面。
+
+## 解法说明
+
+从题目要求中可以发现，每次一定是编号最小的人向编号第二小的人开枪，其余人向编号最小的人开枪，也就是说，每次只有编号最小和第二小的两个人受到枪击。
+
+故对于每一轮，我们可以设此时编号最小的和第二小的人分别为 $x,y$，令 $f_{x,y}$ 表示转移到 $x,y$ 所需要的步数（即消耗的子弹数）则会有以下四种情况：
+
+- **两人都未被击中**
+
+未发生变化，忽略。
+
+- **$x$ 被击中，而 $y$ 幸存**
+
+此时如满足 $p_x<100$（否则 $y$ 必然被击中）且 $\exists i \in [y,n], p_i>0$（否则 $x$ 无法被击中），则转移到 $f_{y,y+1}$；
+
+- **$x$ 幸存，而 $y$ 被击中**
+
+此时如满足 $p_x>0$（否则 $y$ 无法被击中）且 $\forall i \in [y,n], p_i \ne 0$（否则 $x$ 必然被击中），则转移到 $f_{x,y+1}$；
+
+- **$x$ 与 $y$ 都被击中**
+
+此时如满足 $p_x>0$（否则 $y$ 无法被击中）且 $\exists i \in [y,n], p_i>0$（否则 $x$ 无法被击中），则转移到 $f_{y+1,y+2}$。
+
+剩余细节详见下面代码中的注释。
+
+## 通过代码
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+#define PII pair<int,int>
+#define mp make_pair
+const int N=3010;
+
+int n,k,p[N],f[N][N],ans;//ans表示可能的局面的数量
+bool Genshin[N],Impact[N];//Genshin[i]表示j取[i,n]中任意值时时是否有p[i]>0,Impact[i]表示j取[i,n]中任意值时时是否有p[i]=100
+queue<PII> q;
+
+inline int read(){
+    int x=0,f=1;
+    char ch=getchar();
+    while(ch<'0'||ch>'9'){
+        if(ch=='-'){
+            f=-1;
+        }
+        ch=getchar();
+    }
+    while(ch>='0'&&ch<='9'){
+        x=(x<<1)+(x<<3)+(ch^48);
+        ch=getchar();
+    }
+    return x*f;
+}//快读 
+
+inline void write(int x){
+    if(x<0){
+        putchar('-');
+        x=-x;
+    }
+    if(x>9){
+        write(x/10);
+    }
+    putchar(x%10+'0');
+}//快写 
+
+int main(){
+    n=read(),k=read();
+    for(int i=1;i<=n;i++){
+        p[i]=read();
+    }
+    for(int i=n;i>=1;i--){
+        if(Genshin[i+1]||p[i]>0){ 
+            Genshin[i]=1;
+        }//预处理出Genshin[i]
+        if(Impact[i+1]||p[i]==100){
+            Impact[i]=1; 
+        }//预处理出Impact[i]
+    }
+    q.push(mp(1,2));
+    while(!q.empty()){
+        int x=q.front().first,y=q.front().second;
+        q.pop();
+        if(y>n||f[x][y]>=k){
+            continue;
+        }//跳过无法转移的情况（剩余人数不大于1或子弹耗尽） 
+        if(Genshin[y]&&p[x]!=100){
+            if(!f[y][y+1]){
+                f[y][y+1]=f[x][y]+1;
+                ans++;
+                q.push(mp(y,y+1));
+            }
+        }//x被击中，y幸存 
+        if(!Impact[y]&&p[x]>0){
+            if(!f[x][y+1]){
+                f[x][y+1]=f[x][y]+1;
+                ans++;
+                q.push(mp(x,y+1));
+			}
+        }//x幸存，y被击中 
+        if(Genshin[y]&&p[x]>0){
+            if(!f[y+1][y+2]){
+                f[y+1][y+2]=f[x][y]+1;
+                ans++;
+                q.push(mp(y+1,y+2));
+            }
+        }//x与y都被击中 
+    }
+    write(ans+1);//答案要加处在状态(1,2)时的情况 
+    return 0;
+}
+```

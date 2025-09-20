@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HACSP补测游记 - 我的个人博客</title>
+    <title>P1001 A+B Problem 题解 - 我的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,52 +77,99 @@
             </aside>
             <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card">
                 <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
-                <h1 class="text-4xl font-bold mb-4 text-gray-900">HACSP补测游记</h1>
+                <h1 class="text-4xl font-bold mb-4 text-gray-900">P1001 A+B Problem 题解</h1>
                 <div class="text-gray-500 mb-8 border-b pb-4">
                     <span>发布于：2025年09月20日</span> | 
                     <span>作者：Alexxtl</span> | 
                     <span>分类：<a href="#" class="text-purple-600 hover:underline">未分类</a></span>
                 </div>
                 <article class="prose prose-lg max-w-none text-gray-800">
-<h1 class="text-3xl font-bold mt-10 mb-5">J组：</h1>
-<p>早上7：30准时到达，和 fzy 一起进的考场，感觉良好</p>
-<p>打开电脑，轻车熟路地安装好了 Dev cpp，往缺省源里打了一个快读的板子。8：30 给了解压缩密码下载了试题，浏览了一下发现都非常可做，决定按顺序开题。</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T1：</h2>
-<p>非常简单，和 <a href="https://www.luogu.com.cn/problem/P1765" class="text-indigo-600 hover:underline" target="_blank">P1765</a> 基本一样，只要打个表就好。</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T2：</h2>
-<p>给 $n$ 种物品。每个物品有相对应的值，然后再给一个只含有 $0、1$ 的 $b$ 数组，$1$ 代表已选中。现在再选 $k$ 种连续的物品，使得被选中的物品数量之和最大（包括已选中的），将最大值输出。</p>
-<p>这题只需要用前缀和就好，并没有什么难度</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T3：</h2>
-<p>给一个 $n×m$ 的矩阵，每个位置上无非就是 $U,D,L,R$ 四个字母，意思是到达位置就会向上、下、左、右走。走出界外就回不来了，求矩阵中从多少个位置出发可以到达右下角。右下角字母一定是 $O$。</p>
-<p>考场上开始想的是从左上角开始 DFS，但感觉会超时，于是改成了从右下角开始，预计时间复杂度没有问题。</p>
-<p>预期得分：$100$</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">T4：</h2>
-<p>国际象棋的走法，$Q$ 代表王后，$R$ 代表城堡（车），$N$ 代表骑士（马），K代表国王，$P$ 代表卒子，$B$ 代表主教（象）。</p>
-<p>多组数据，每组一个字符串包含以上 $6$ 种字符，再给定两组坐标，一组起点，一组终点，字符串代表可以用其中一种棋子的走法来从起点走到终点，输出最小的步数，如果走不到输出 $-1$。</p>
-<p>输入：</p>
-<pre><code class="language-plain">1
+<p>不要被误导了，这是一道很简单的题目。</p>
+<p>由于直接计算两数的和比较困难，考虑使用数据结构。</p>
+<p>不难发现可以维护一棵树套树，将 $a$ 和 $b$ 分别插入该树中。众所周知，树套树有一个经典功能就是查询区间排名。由于在区间 $\left [ 1,2 \right ]$ 中有且只有 $a$ 和 $b$ 两个数，所以只需要将该区间中排名为 $1$ 和 $2$ 的数相加，就是我们所要求的值。</p>
+<p>参考代码如下：</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+#include&lt;ext/pb_ds/assoc_container.hpp&gt;
+#include&lt;ext/pb_ds/tree_policy.hpp&gt;
+using namespace std;
+using namespace __gnu_pbds;
+#define int long long
+#define PII pair&lt;int,int&gt;
+#define mp make_pair
+#define ls(p) p&lt;&lt;1
+#define rs(p) p&lt;&lt;1|1 
+typedef tree&lt;PII,null_type,less&lt;PII&gt;,rb_tree_tag,tree_order_statistics_node_update&gt; rbt; 
+const int N=5e4+10;
+const int MAXINF=2147483647;
+const int MININF=-2147483647; 
 
-P
+namespace IO{
+	inline int read(){ int x=0,f=1;char ch=getchar(); while(ch&lt;&apos;0&apos;||ch&gt;&apos;9&apos;){ if(ch==&apos;-&apos;) f=-1; ch=getchar(); } while(ch&gt;=&apos;0&apos;&amp;&amp;ch&lt;=&apos;9&apos;) x=(x&lt;&lt;1)+(x&lt;&lt;3)+(ch^48),ch=getchar(); return x*f; }
+	inline void write(int x){ if(x&lt;0) putchar(&apos;-&apos;),x=-x; if(x&gt;9) write(x/10); putchar(x%10+&apos;0&apos;); }
+}using namespace IO;
 
-4 4 2 4
+int n,m,a[N],tot;
+
+int MAX(int x,int y){
+	if(x&gt;y){
+		return x;
+	}
+	return y;
+}
+
+int MIN(int x,int y){
+	if(x&lt;y){
+		return x;
+	}
+	return y;
+}
+
+struct segment_tree{
+	struct node{
+		int mx,mn;
+		rbt t;
+	}t[N&lt;&lt;2];
+	
+	void push_up(int p){
+		t[p].mx=MAX(t[ls(p)].mx,t[rs(p)].mx),t[p].mn=MIN(t[ls(p)].mn,t[rs(p)].mn);
+	}
+	
+	void build(int p,int l,int r){
+		t[p].mn=MAXINF;
+		if(l==r) return t[p].t.insert(mp(a[l],++tot)),t[p].mx=a[l],t[p].mn=a[l],void();
+		for(int i=l;i&lt;=r;i++) t[p].t.insert(mp(a[i],++tot));
+		int mid=(l+r)&gt;&gt;1;
+		build(ls(p),l,mid),build(rs(p),mid+1,r),push_up(p);
+	}
+	
+	int rank_k(int p,int l,int r,int ql,int qr,PII k){
+		if(ql&lt;=l&amp;&amp;r&lt;=qr) return t[p].t.order_of_key(k);
+		int mid=(l+r)&gt;&gt;1,ret=0;
+		if(ql&lt;=mid) ret+=rank_k(ls(p),l,mid,ql,qr,k);
+		if(qr&gt;mid) ret+=rank_k(rs(p),mid+1,r,ql,qr,k);
+		return ret;
+	}
+	
+	int kth_rank(int ql,int qr,int k){
+		int l=t[1].mn-1,r=t[1].mx+1,rk;
+		while(l&lt;r){
+			int mid=(l+r)&gt;&gt;1;
+			rk=rank_k(1,1,n,ql,qr,mp(mid,tot+1));
+			if(rk&lt;k) l=mid+1;
+			else r=mid;
+		}
+		return l;
+	}
+}t;
+
+signed main(){
+	n=2,m=1;
+	for(int i=1;i&lt;=n;i++) a[i]=read();
+	t.build(1,1,n);
+	for(int i=1;i&lt;=m;i++) write(t.kth_rank(1,n,1)+t.kth_rank(1,n,2)),putchar(&apos;\n&apos;);
+	return 0;
+}
 </code></pre>
-<p>输出：</p>
-<pre><code class="language-plain">2
-</code></pre>
-<p>题目不是很难，但是因为我太蒻了，只推出了 $60$ 分的部分分，其中还有 $35$ 分写挂了，喜提 $25$ 分。</p>
-<p>有 $Q$ 无 $N$ 可先判断 $K$ 能否一步走到，否则两步。</p>
-<p>只有 $B$ 可判断目标点是否为 $B$ 可覆盖到范围，具体判断方法很简单，这里不多说了，是则输出 $1$ 或 $2$，否则输出 $-1$。</p>
-<p>如有 $B$、$N$ 则在只有 $B$ 的基础上特判 $N$ 能否以不到并将其他输出 $-1$ 改为输出 $3$。</p>
-<p>只有 $K$、$P$ 可视作只有 $K$，取 $x$ 坐标差与 $y$ 坐标差中的最大值即可。</p>
-<p>只有 $P$ 看目标点是否在起始点上方，是则为 $y$ 坐标差，否则输出 $-1$。</p>
-<p>（<del>剩下的考场上没想出来于是考后就咕了</del>）</p>
-<p>预期得分：$25$</p>
-<p>预期总分：$100+100+100+25=325$</p>
-<p>实际总分：$100+100+100+25=325$</p>
-<h1 class="text-3xl font-bold mt-10 mb-5">S组</h1>
-<p><del>咕咕咕</del></p>
 
                 </article>
             </main>

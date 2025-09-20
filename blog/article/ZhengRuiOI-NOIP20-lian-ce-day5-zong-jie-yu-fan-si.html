@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSP 2024 游记 - 我的个人博客</title>
+    <title>ZhengRuiOI NOIP20连测day5总结与反思 - 我的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,8 +63,7 @@
                     <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
                         <h3 class="text-xl font-bold mb-4 border-b pb-2">文章标签</h3>
                         <div class="flex flex-wrap gap-2">
-                           <a href="#" class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-indigo-200 transition-colors">生活随笔</a>
-
+                           
                         </div>
                     </div>
                     <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 card">
@@ -78,31 +77,21 @@
             </aside>
             <main class="w-full lg:flex-grow bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-12 card">
                 <a href="https://alexxtl.github.io/blog/" class="text-indigo-600 hover:underline mb-6 inline-block">&larr; 返回首页</a>
-                <h1 class="text-4xl font-bold mb-4 text-gray-900">CSP 2024 游记</h1>
+                <h1 class="text-4xl font-bold mb-4 text-gray-900">ZhengRuiOI NOIP20连测day5总结与反思</h1>
                 <div class="text-gray-500 mb-8 border-b pb-4">
-                    <span>发布于：2024年10月24日</span> | 
+                    <span>发布于：2025年09月20日</span> | 
                     <span>作者：Alexxtl</span> | 
-                    <span>分类：<a href="#" class="text-purple-600 hover:underline">生活随笔</a></span>
+                    <span>分类：<a href="#" class="text-purple-600 hover:underline">未分类</a></span>
                 </div>
                 <article class="prose prose-lg max-w-none text-gray-800">
-<h2 class="text-2xl font-bold mt-8 mb-4">[更好的阅读体验](https://www.cnblogs.com/Alexxtl/p/18500277)</h2>
-<p>---</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">day 0</h2>
-<p>在机房摆烂了一天。</p>
-<h2 class="text-2xl font-bold mt-8 mb-4">day 1</h2>
-<p>13:30 到了考点，想睡一会发现睡不着。</p>
-<p>想面基 fzy，但他已经进考场了，没面到。</p>
-<p>14:10 左右进的考场。这考场的环境真的抽象。</p>
-<p>开考 10 min 终于把编译器调完了。</p>
-<p>又过了 10 min 把 T1 秒了。</p>
-<p>随后看了看 T2，发现有一些思路，打了半小时后测了一下样例结果没过，发现是题读错了，于是先扔了。</p>
-<p>又看了一会 T3，半小时写完了一个 $O(n^2)$ 的 dp，测了一下发现又没过样例，调了一小时才发现是多测没清空。难绷。</p>
-<p>看了看 T4，没什么思路，又回去看 T2。重新读了一遍题之后会了一个 60 分的做法，写了半小时发现还是不对，调了一小时也没发现哪里有问题。此时只剩 20 min 了，放弃调代码去写了个 20 分的暴力 dfs。结果还是没能过样例？调到结束都没能调出来。</p>
-<p>最终估分 100 + 0 + 50 + 0 = 150。</p>
-<p>考完后才发现 pct 坐我右前方，wjl 坐我左前方。wjl 似乎是把 T2 A了，orz。</p>
-<p>出场一问，ghz 250，wxy 210。zyb 384。</p>
-<p>只有我没上 200。只有我 T2 没分。喜提机房倒一。</p>
-<p>算了，毁灭罢，赶紧的。</p>
+<h1 class="text-3xl font-bold mt-10 mb-5">ZhengRuiOI NOIP20连测day5总结与反思</h1>
+<p>上来看 T1，一眼二分答案，十分钟秒了。</p>
+<p>然后对着T2想了一个半小时，感觉似乎是个背包。但推完发现只会写 $O(nm^2)$ 的，只能过 50 分。感觉心态有些不稳，就出去转了一会，回来后开始敲。写的过程中又发现可以对第三重循环优化一下，这样就有了 70 分。写完之后发现过不了样例，原来是次数算错了。调完之后还是过不了，仔细读题以后发现被取模骗了。又改了改终于过了。</p>
+<p>此时又过了一个半小时，已经快十二点了。感觉时间不够推出任何一题的正解了，于是开始打部分分。之前出去转的时候想到了 T4 的 50 分思路，花了十分钟将其写了出来。感觉 $s=1$ 的点也比较好写，但懒得写了。</p>
+<p>还有半小时，先对着 T3 敲了一个 $O((m+1)^{2n})$ 的暴搜，然后想了一会，推出来了一个 $O(Tn^2m^2)$ 的 DP。实现完后已经十二点半了，提交跑路。</p>
+<p>估分：100 + 70 + 50 + 50 = 270</p>
+<p>实际得分：100 + 60 + 30 + 50 = 270</p>
+<p>事后发现 T3 挂分是因为用 memcpy 而且数组是按照 100% 的数据范围开的被卡到 TLE 了。我与 memcpy 不共戴天！！！</p>
 
                 </article>
             </main>

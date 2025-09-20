@@ -1,0 +1,95 @@
+算法思路
+
+## [更好的阅读体验](https://www.cnblogs.com/Alexxtl/p/17743113.html)
+
+# 算法思路
+
+**一、多组查询**
+
+· 考虑如何利用已知信息避免重复查询。
+
+· 考虑各种预处理，例如前缀和。
+
+------------
+
+**二、规模减小**
+
+· 考虑树、链等
+
+------------
+
+**三、以小见大**
+
+· 考虑特殊情况，并考虑以此为基础继续转移
+
+------------
+
+
+**四、模拟优化**
+
+· 考虑高维复杂度算法，并考虑尽可能优化
+
+------------
+
+**五、题面信息**
+
+· 数据规模
+
+
+$$
+n≥10^8:O(\log n) \text{或} O(1) \text{，包括找规律、矩阵乘法、快速幂、打表、找数据规律、数论等}
+$$
+
+$$
+n≤10^6:O(n) \text{（有时可以考虑} O(n \log n) \text{的）} \text{，包括线性 dp、单调队列、单调栈、前缀和、差分等}
+$$
+
+$$
+n≤10^5:O(n \log n) \text{或} O(n \log^2 n) \text{，包括线段树、平衡树等树形数据结构、dijkstra、Kruskal 等}
+$$
+
+$$
+n≤10^3:O(n^2) \text{，包括大多数 dp 还有 prim 等}
+$$
+
+$$
+n≤300:O(n^3) \text{，包括高维 dp，floyd 等}
+$$
+
+$$
+n≤70:O(n^4) \text{，一般是 dp，或许可以尝试下搜索}
+$$
+
+$$
+n≤20:(2^n) \text{，包括暴搜，状压 dp，各类二进制算法等}
+$$
+
+$$
+n≤10:O(n!) \text{，一般是暴搜}
+$$
+
+· 特殊信息
+
+$$
+\text{各种二：二分图、二进制差分等}
+$$
+
+$$
+\text{n 次以内无解：迭代加深搜索}
+$$
+
+$$
+\text{图论 + k 条路优化：分层图}
+$$
+
+------------
+
+**参考资料：**
+
+**[zhzkiller](https://www.luogu.com.cn/user/764944)-[《【知识点】关于综合》](https://www.luogu.com.cn/blog/zhzkiller/zsd-everything)**
+
+**[zhzkiller](https://www.luogu.com.cn/user/764944)-[《【备忘录】》](https://www.luogu.com.cn/blog/zhzkiller/something)**
+
+**[余俊达](https://www.luogu.com.cn/user/344847)-[《基础知识》](https://www.luogu.com.cn/blog/yjd-small-fish/ji-chu-zhi-shi)（已被隐藏）**
+
+**[余俊达](https://www.luogu.com.cn/user/344847)-[《有用的卡常》](https://www.luogu.com.cn/blog/yjd-small-fish/you-yong-di-ka-chang)（已被隐藏）**

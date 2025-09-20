@@ -7,10 +7,14 @@
 #include <iomanip>
 #include <ctime>
 #include <cstring>
+#include <algorithm> // For std::min
 
-// 如果是Windows系统，则包含windows.h并自动设置控制台编码
+// Platform-specific includes for directory listing
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <dirent.h>
+#include <sys/stat.h>
 #endif
 
 // HTML 模板
@@ -120,7 +124,7 @@ const std::string HTML_TEMPLATE = R"HTML_TEMPLATE(<!DOCTYPE html>
 </body>
 </html>)HTML_TEMPLATE";
 
-// 帮助函数：替换字符串中所有出现的占位符
+// --- Helper Functions ---
 void replace_all(std::string& str, const std::string& from, const std::string& to) {
     if (from.empty()) return;
     size_t start_pos = 0;
@@ -130,7 +134,6 @@ void replace_all(std::string& str, const std::string& from, const std::string& t
     }
 }
 
-// 帮助函数：转义HTML特殊字符
 std::string escape_html(const std::string& data) {
     std::string buffer;
     buffer.reserve(data.size());
@@ -147,144 +150,384 @@ std::string escape_html(const std::string& data) {
     return buffer;
 }
 
-// 跨平台安全地获取本地时间
 std::tm localtime_safe(const std::time_t& t) {
     std::tm tm_snapshot;
 #if defined(_MSC_VER)
     localtime_s(&tm_snapshot, &t);
 #else
-    // 对于GCC/Clang等其他编译器，使用 localtime_r
     localtime_r(&t, &tm_snapshot);
 #endif
     return tm_snapshot;
 }
 
-// --- 重构的 Markdown 解析函数 ---
+// --- Markdown Parsing Engine ---
+std::string parse_inline_markdown(std::string line);
 
-// 帮助函数：处理行内元素，如代码、加粗和链接
-std::string parse_inline_elements(std::string line) {
-    std::string result = "";
+size_t find_next_token(const std::string& text, size_t start_pos) {
+    size_t p1 = text.find('`', start_pos);
+    size_t p2 = text.find("**", start_pos);
+    size_t p3 = text.find("~~", start_pos);
+    size_t p4 = text.find('[', start_pos);
+    size_t p5 = text.find('$', start_pos);
+    size_t next_pos = std::string::npos;
+    if (p1 != std::string::npos) next_pos = std::min(next_pos, p1);
+    if (p2 != std::string::npos) next_pos = std::min(next_pos, p2);
+    if (p3 != std::string::npos) next_pos = std::min(next_pos, p3);
+    if (p4 != std::string::npos) next_pos = std::min(next_pos, p4);
+    if (p5 != std::string::npos) next_pos = std::min(next_pos, p5);
+    return next_pos;
+}
+
+std::string parse_inline_markdown(std::string line) {
+    std::string result;
     size_t last_pos = 0;
-
     while (last_pos < line.length()) {
-        // 查找下一个特殊字符
-        size_t code_pos = line.find('`', last_pos);
-        size_t bold_pos = line.find("**", last_pos);
-        size_t link_pos = line.find('[', last_pos);
-
-        // 确定最先出现的特殊字符
-        size_t next_pos = std::string::npos;
-        if (code_pos != std::string::npos) next_pos = std::min(next_pos, code_pos);
-        if (bold_pos != std::string::npos) next_pos = std::min(next_pos, bold_pos);
-        if (link_pos != std::string::npos) next_pos = std::min(next_pos, link_pos);
-
-        // 如果没有更多特殊字符，则添加剩余文本并结束
-        if (next_pos == std::string::npos) {
-            result += line.substr(last_pos);
-            break;
-        }
-
-        // 添加特殊字符前的普通文本
+        size_t next_pos = find_next_token(line, last_pos);
+        if (next_pos == std::string::npos) { result += line.substr(last_pos); break; }
         result += line.substr(last_pos, next_pos - last_pos);
         last_pos = next_pos;
 
-        // --- 根据找到的特殊字符进行处理 ---
-
-        // 处理行内代码 `...`
-        if (next_pos == code_pos) {
+        if (line[last_pos] == '$') {
+            const std::string delim = (line.substr(last_pos, 2) == "$$") ? "$$" : "$";
+            size_t end_pos = line.find(delim, last_pos + delim.length());
+            if (end_pos != std::string::npos) {
+                result += line.substr(last_pos, end_pos - last_pos + delim.length());
+                last_pos = end_pos + delim.length();
+            } else { result += '$'; last_pos++; }
+        } else if (line[last_pos] == '`') {
             size_t end_pos = line.find('`', last_pos + 1);
             if (end_pos != std::string::npos) {
-                std::string code_content = line.substr(last_pos + 1, end_pos - last_pos - 1);
-                result += "<code>" + escape_html(code_content) + "</code>";
+                result += "<code>" + escape_html(line.substr(last_pos + 1, end_pos - last_pos - 1)) + "</code>";
                 last_pos = end_pos + 1;
-            } else {
-                result += '`'; // 未找到闭合标签，当作普通字符处理
-                last_pos++;
-            }
-        }
-        // 处理加粗 **...**
-        else if (next_pos == bold_pos) {
+            } else { result += '`'; last_pos++; }
+        } else if (line.substr(last_pos, 2) == "**") {
             size_t end_pos = line.find("**", last_pos + 2);
             if (end_pos != std::string::npos) {
-                std::string bold_content = line.substr(last_pos + 2, end_pos - last_pos - 2);
-                result += "<strong>" + parse_inline_elements(bold_content) + "</strong>"; // 递归处理内部元素
+                result += "<strong>" + parse_inline_markdown(line.substr(last_pos + 2, end_pos - last_pos - 2)) + "</strong>";
                 last_pos = end_pos + 2;
-            } else {
-                result += "**"; // 未找到闭合标签
-                last_pos += 2;
-            }
-        }
-        // 处理链接 [...]...
-        else if (next_pos == link_pos) {
+            } else { result += "**"; last_pos += 2; }
+        } else if (line.substr(last_pos, 2) == "~~") {
+            size_t end_pos = line.find("~~", last_pos + 2);
+            if (end_pos != std::string::npos) {
+                result += "<del>" + parse_inline_markdown(line.substr(last_pos + 2, end_pos - last_pos - 2)) + "</del>";
+                last_pos = end_pos + 2;
+            } else { result += "~~"; last_pos += 2; }
+        } else if (line[last_pos] == '[') {
             size_t link_end = line.find("]", last_pos);
             size_t url_start = line.find("(", link_end);
             size_t url_end = line.find(")", url_start);
-
             if (link_end != std::string::npos && url_start == link_end + 1 && url_end != std::string::npos) {
                 std::string text = line.substr(last_pos + 1, link_end - last_pos - 1);
                 std::string url = line.substr(url_start + 1, url_end - url_start - 1);
-                result += "<a href=\"" + url + "\" class=\"text-indigo-600 hover:underline\" target=\"_blank\">" + parse_inline_elements(text) + "</a>";
+                result += "<a href=\"" + url + "\" class=\"text-indigo-600 hover:underline\" target=\"_blank\">" + parse_inline_markdown(text) + "</a>";
                 last_pos = url_end + 1;
-            } else {
-                result += '['; // 不是有效的链接格式
-                last_pos++;
-            }
+            } else { result += '['; last_pos++; }
         }
     }
     return result;
 }
 
-// 主解析函数：将Markdown内容转换为HTML
 std::string parse_content_to_html(std::istream& input) {
     std::stringstream output;
     std::string line;
-    bool in_code_block = false;
+    enum State { NORMAL, IN_CODE_BLOCK, IN_MATH_BLOCK };
+    State current_state = NORMAL;
+    std::stringstream block_buffer;
+    std::string code_lang = "";
     bool in_list = false;
 
+    auto flush_list_if_needed = [&]() {
+        if (in_list) { output << "</ul>\n"; in_list = false; }
+    };
+
     while (std::getline(input, line)) {
-        // --- 代码块处理 ---
-        if (line.rfind("```cpp", 0) == 0) {
-            if (in_list) { output << "</ul>\n"; in_list = false; }
-            in_code_block = true;
-            output << "<pre><code class=\"language-cpp\">";
-            continue;
-        }
-        if (line.rfind("```", 0) == 0 && in_code_block) {
-            in_code_block = false;
-            output << "</code></pre>\n";
-            continue;
-        }
-        if (in_code_block) {
-            output << escape_html(line) << "\n";
-            continue;
-        }
-
-        // --- 块级元素处理 ---
-
-        // 标题
-        if (line.rfind("## ", 0) == 0) {
-            if (in_list) { output << "</ul>\n"; in_list = false; }
-            output << "<h2 class=\"text-2xl font-bold mt-8 mb-4\">" << line.substr(3) << "</h2>\n";
-        } 
-        // 列表
-        else if (line.rfind("- ", 0) == 0) {
-            if (!in_list) { output << "<ul class=\"list-disc pl-5 my-4\">\n"; in_list = true; }
-            std::string item_content = line.substr(2);
-            output << "<li>" << parse_inline_elements(item_content) << "</li>\n";
-        } 
-        // 空行
-        else if (line.empty()) {
-            if (in_list) { output << "</ul>\n"; in_list = false; }
-        } 
-        // 普通段落
-        else {
-            if (in_list) { output << "</ul>\n"; in_list = false; }
-            output << "<p>" << parse_inline_elements(line) << "</p>\n";
+        switch (current_state) {
+            case NORMAL:
+                if (line.rfind("```", 0) == 0) {
+                    flush_list_if_needed(); current_state = IN_CODE_BLOCK; code_lang = line.substr(3);
+                } else if (line.rfind("$$", 0) == 0) {
+                    flush_list_if_needed(); block_buffer << line << "\n";
+                    if (line.find("$$", 2) == std::string::npos) { current_state = IN_MATH_BLOCK; } 
+                    else { output << "<p>" << block_buffer.str() << "</p>\n"; block_buffer.str(""); }
+                } else if (line.length() >= 3 && (line.find_first_not_of('-') == std::string::npos || line.find_first_not_of('*') == std::string::npos)) {
+                    flush_list_if_needed(); output << "<hr class=\"my-8 border-gray-300\">\n";
+                } else if (line.rfind("# ", 0) == 0) {
+                    flush_list_if_needed(); output << "<h1 class=\"text-3xl font-bold mt-10 mb-5\">" << parse_inline_markdown(line.substr(2)) << "</h1>\n";
+                } else if (line.rfind("## ", 0) == 0) {
+                    flush_list_if_needed(); output << "<h2 class=\"text-2xl font-bold mt-8 mb-4\">" << parse_inline_markdown(line.substr(3)) << "</h2>\n";
+                } else if (line.rfind("- ", 0) == 0) {
+                    if (!in_list) { output << "<ul class=\"list-disc pl-5 my-4\">\n"; in_list = true; }
+                    output << "<li>" << parse_inline_markdown(line.substr(2)) << "</li>\n";
+                } else if (line.empty()) {
+                    flush_list_if_needed();
+                } else {
+                    flush_list_if_needed(); output << "<p>" << parse_inline_markdown(line) << "</p>\n";
+                }
+                break;
+            case IN_CODE_BLOCK:
+                if (line.rfind("```", 0) == 0) {
+                    output << "<pre><code class=\"language-" << (code_lang.empty() ? "plain" : code_lang) << "\">" 
+                           << escape_html(block_buffer.str()) << "</code></pre>\n";
+                    block_buffer.str(""); current_state = NORMAL;
+                } else { block_buffer << line << "\n"; }
+                break;
+            case IN_MATH_BLOCK:
+                block_buffer << line << "\n";
+                if (line.find("$$") != std::string::npos) {
+                    output << "<p>" << block_buffer.str() << "</p>\n";
+                    block_buffer.str(""); current_state = NORMAL;
+                }
+                break;
         }
     }
-    if (in_list) { output << "</ul>\n"; } // 确保关闭最后的列表
-
+    flush_list_if_needed();
     return output.str();
+}
+
+// --- NEW File System & Batch Processing ---
+
+std::vector<std::string> list_txt_files(const std::string& directory) {
+    std::vector<std::string> files;
+#ifdef _WIN32
+    std::string search_path = directory + "\\*.txt";
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = FindFirstFile(search_path.c_str(), &fd);
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+                files.push_back(fd.cFileName);
+            }
+        } while (FindNextFile(hFind, &fd));
+        FindClose(hFind);
+    }
+#else
+    DIR* dir = opendir(directory.c_str());
+    if (dir == NULL) {
+        return files;
+    }
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL) {
+        std::string filename = entry->d_name;
+        if (filename.length() > 4 && filename.substr(filename.length() - 4) == ".txt") {
+            files.push_back(filename);
+        }
+    }
+    closedir(dir);
+#endif
+    return files;
+}
+
+std::string generate_preview_html(const std::string& title, const std::string& summary, const std::string& date_str, const std::string& category, const std::string& html_filename) {
+    std::stringstream ss;
+    ss << "<!-- Article Preview for: " << escape_html(title) << " -->\n";
+    ss << "<article class=\"bg-white/70 backdrop-blur-sm rounded-xl p-8 lg:p-10 card transition-shadow hover:shadow-xl\">\n";
+    ss << "    <h2 class=\"text-3xl font-bold mb-3\">\n";
+    ss << "        <a href=\"" << html_filename << "\" class=\"text-gray-900 hover:text-indigo-600\">" << escape_html(title) << "</a>\n";
+    ss << "    </h2>\n";
+    ss << "    <div class=\"text-gray-500 text-sm mb-4\">\n";
+    ss << "        <span>" << date_str << "</span> | <span>分类：<a href=\"#\" class=\"text-pink-600 hover:underline\">" << escape_html(category) << "</a></span>\n";
+    ss << "    </div>\n";
+    ss << "    <p class=\"text-gray-700 leading-relaxed mb-6\">\n";
+    ss << "        " << escape_html(summary) << "...\n";
+    ss << "    </p>\n";
+    ss << "    <a href=\"" << html_filename << "\" class=\"inline-block bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-700 transition-colors\">阅读全文 &rarr;</a>\n";
+    ss << "</article>\n\n";
+    return ss.str();
+}
+
+void process_single_file() {
+    std::string title, content_filename, output_filename, tags_input;
+    std::cout << "请输入文章标题: ";
+    std::getline(std::cin, title);
+    std::cout << "请输入内容文件名 (例如: content.txt): ";
+    std::getline(std::cin, content_filename);
+    std::cout << "请输入输出HTML文件名 (例如: article.html): ";
+    std::getline(std::cin, output_filename);
+    std::cout << "请输入文章标签 (用逗号分隔): ";
+    std::getline(std::cin, tags_input);
+
+    std::ifstream content_file(content_filename);
+    if (!content_file) {
+        std::cerr << "错误: 无法打开内容文件 '" << content_filename << "'\n";
+        return;
+    }
+
+    std::string parsed_content = parse_content_to_html(content_file);
+    content_file.close();
+
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm local_tm = localtime_safe(in_time_t);
+    char date_buffer[128];
+    strftime(date_buffer, sizeof(date_buffer), "%Y年%m月%d日", &local_tm);
+    std::string date_str(date_buffer);
+
+    std::stringstream tags_ss(tags_input);
+    std::string tag, first_tag, category_html;
+    std::stringstream tags_html_ss;
+    std::vector<std::string> colors = {"indigo", "purple", "pink", "green", "blue", "yellow", "red"};
+    int color_index = 0;
+
+    while (std::getline(tags_ss, tag, ',')) {
+        size_t first = tag.find_first_not_of(" \t");
+        if (std::string::npos == first) continue;
+        size_t last = tag.find_last_not_of(" \t");
+        tag = tag.substr(first, (last - first + 1));
+        if (!tag.empty()) {
+            if (first_tag.empty()) first_tag = tag;
+            const std::string& color = colors[color_index % colors.size()];
+            tags_html_ss << "<a href=\"#\" class=\"bg-" << color << "-100 text-" << color << "-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-" << color << "-200 transition-colors\">" << escape_html(tag) << "</a>\n";
+            color_index++;
+        }
+    }
+    category_html = "<span>分类：<a href=\"#\" class=\"text-purple-600 hover:underline\">" + escape_html(first_tag.empty() ? "未分类" : first_tag) + "</a></span>";
+    
+    std::string final_html = HTML_TEMPLATE;
+    replace_all(final_html, "<!--TITLE_PLACEHOLDER-->", escape_html(title));
+    replace_all(final_html, "<!--DATE_PLACEHOLDER-->", date_str);
+    replace_all(final_html, "<!--CONTENT_PLACEHOLDER-->", parsed_content);
+    replace_all(final_html, "<!--TAGS_PLACEHOLDER-->", tags_html_ss.str());
+    replace_all(final_html, "<!--CATEGORY_PLACEHOLDER-->", category_html);
+
+    std::ofstream output_file(output_filename);
+    if (!output_file) { std::cerr << "错误: 无法创建输出文件 '" << output_filename << "'\n"; return; }
+    output_file << final_html;
+    output_file.close();
+    std::cout << "\n成功! 文章HTML文件已生成: " << output_filename << std::endl;
+}
+
+void process_batch() {
+    std::string text_dir = "text";
+    std::vector<std::string> txt_files = list_txt_files(text_dir);
+
+    if (txt_files.empty()) {
+        std::cout << "在 '" << text_dir << "' 文件夹中未找到任何 .txt 文件。\n";
+        return;
+    }
+
+    std::cout << "找到了 " << txt_files.size() << " 个 .txt 文件。开始批量处理...\n\n";
+    std::string default_tags;
+    std::cout << "请输入所有文章的默认标签 (用逗号分隔，可留空): ";
+    std::getline(std::cin, default_tags);
+
+    std::stringstream all_previews_ss;
+    
+    for (const auto& filename : txt_files) {
+        std::string full_path = text_dir + "/" + filename;
+        std::ifstream content_file(full_path);
+        if (!content_file) {
+            std::cerr << "错误: 无法打开 " << full_path << "，已跳过。\n";
+            continue;
+        }
+
+        std::string title;
+        std::getline(content_file, title);
+        if (title.empty()) {
+            title = filename; // Fallback title
+        }
+        
+        // 读取剩余的全部内容
+        std::stringstream content_ss;
+        content_ss << content_file.rdbuf();
+        std::string full_content_string = content_ss.str();
+        content_file.close();
+
+        // 为解析和摘要创建独立的流
+        std::istringstream content_to_parse(full_content_string);
+        std::string parsed_content = parse_content_to_html(content_to_parse);
+
+        // Generate files
+        std::string base_filename = filename.substr(0, filename.length() - 4);
+        std::string output_filename = base_filename + ".html";
+
+        auto now = std::chrono::system_clock::now();
+        auto in_time_t = std::chrono::system_clock::to_time_t(now);
+        std::tm local_tm = localtime_safe(in_time_t);
+        char date_buffer[128];
+        strftime(date_buffer, sizeof(date_buffer), "%Y年%m月%d日", &local_tm);
+        std::string date_str(date_buffer);
+
+        std::stringstream tags_ss(default_tags);
+        std::string tag, first_tag, category_html;
+        std::stringstream tags_html_ss;
+        std::vector<std::string> colors = {"indigo", "purple", "pink", "green", "blue", "yellow", "red"};
+        int color_index = 0;
+        
+        while (std::getline(tags_ss, tag, ',')) {
+            size_t first = tag.find_first_not_of(" \t");
+            if (std::string::npos == first) continue;
+            size_t last = tag.find_last_not_of(" \t");
+            tag = tag.substr(first, (last - first + 1));
+            if (!tag.empty()) {
+                if (first_tag.empty()) first_tag = tag;
+                const std::string& color = colors[color_index % colors.size()];
+                tags_html_ss << "<a href=\"#\" class=\"bg-" << color << "-100 text-" << color << "-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-" << color << "-200 transition-colors\">" << escape_html(tag) << "</a>\n";
+                color_index++;
+            }
+        }
+        if (first_tag.empty() && !default_tags.empty()){
+             // in case there's only one tag
+             first_tag = default_tags.substr(default_tags.find_first_not_of(" \t"));
+        }
+        category_html = "<span>分类：<a href=\"#\" class=\"text-purple-600 hover:underline\">" + escape_html(first_tag.empty() ? "未分类" : first_tag) + "</a></span>";
+
+        std::string final_html = HTML_TEMPLATE;
+        replace_all(final_html, "<!--TITLE_PLACEHOLDER-->", escape_html(title));
+        replace_all(final_html, "<!--DATE_PLACEHOLDER-->", date_str);
+        replace_all(final_html, "<!--CONTENT_PLACEHOLDER-->", parsed_content);
+        replace_all(final_html, "<!--TAGS_PLACEHOLDER-->", tags_html_ss.str());
+        replace_all(final_html, "<!--CATEGORY_PLACEHOLDER-->", category_html);
+
+        std::ofstream output_file(output_filename);
+        if (!output_file) {
+            std::cerr << "错误: 无法创建 " << output_filename << "，已跳过。\n";
+            continue;
+        }
+        output_file << final_html;
+        output_file.close();
+        
+        // --- 修正：智能生成摘要 ---
+        std::string summary;
+        std::istringstream summary_stream(full_content_string);
+        std::string line;
+        while(summary.length() < 150 && std::getline(summary_stream, line)) {
+            // Trim whitespace
+            size_t first = line.find_first_not_of(" \t\r\n");
+            if (std::string::npos == first) continue;
+            size_t last = line.find_last_not_of(" \t\r\n");
+            line = line.substr(first, (last - first + 1));
+            
+            // Skip non-content lines
+            if (line.empty() || line[0] == '#' || line.rfind("```", 0) == 0 || line.rfind("$$", 0) == 0 || (line.length() >= 3 && (line.find_first_not_of('-') == std::string::npos || line.find_first_not_of('*') == std::string::npos))) {
+                continue;
+            }
+            summary.append(line).append(" ");
+        }
+
+        if(summary.length() > 150){
+            // Safe UTF-8 truncate
+            size_t byte_count = 0;
+            size_t char_count = 0;
+            const size_t char_limit = 75;
+            for(byte_count = 0; char_count < char_limit && byte_count < summary.length(); ++byte_count){
+                if((summary[byte_count] & 0xC0) != 0x80){
+                    char_count++;
+                }
+            }
+            summary = summary.substr(0, byte_count);
+        }
+        all_previews_ss << generate_preview_html(title, summary, date_str, first_tag.empty() ? "未分类" : first_tag, output_filename);
+
+        std::cout << "  - 已成功生成: " << output_filename << "\n";
+    }
+
+    std::string preview_filename = "`[index]previews_for_index.html";
+    std::ofstream preview_file(preview_filename);
+    preview_file << all_previews_ss.str();
+    preview_file.close();
+
+    std::cout << "\n批量处理完成！\n";
+    std::cout << "所有文章预览代码已保存至: " << preview_filename << "\n";
 }
 
 
@@ -294,94 +537,21 @@ int main() {
     SetConsoleCP(CP_UTF8);
 #endif
 
-    std::string title, content_filename, output_filename, tags_input;
+    char mode;
+    std::cout << "请选择运行模式:\n";
+    std::cout << "  1. 单文件模式 (手动输入信息)\n";
+    std::cout << "  2. 批量处理模式 (自动处理 'text' 文件夹下的所有 .txt 文件)\n";
+    std::cout << "请输入模式编号 (1 或 2): ";
+    std::cin >> mode;
+    std::cin.ignore(10000, '\n'); // Clear the input buffer
 
-    std::cout << "请输入文章标题: ";
-    std::getline(std::cin, title);
-
-    std::cout << "请输入内容文件名 (例如: content.txt): ";
-    std::getline(std::cin, content_filename);
-
-    std::cout << "请输入输出HTML文件名 (例如: article.html): ";
-    std::getline(std::cin, output_filename);
-
-    std::cout << "请输入文章标签 (用逗号分隔, 例如: C++,算法,题解): ";
-    std::getline(std::cin, tags_input);
-
-
-    std::ifstream content_file(content_filename);
-    if (!content_file.is_open()) {
-        std::cerr << "错误: 无法打开内容文件 '" << content_filename << "'" << std::endl;
-        return 1;
-    }
-
-    // 解析内容
-    std::string parsed_content = parse_content_to_html(content_file);
-    content_file.close();
-
-    // 获取当前日期
-    auto now = std::chrono::system_clock::now();
-    auto in_time_t = std::chrono::system_clock::to_time_t(now);
-    std::tm local_tm = localtime_safe(in_time_t);
-    
-    char date_buffer[128];
-    if (strftime(date_buffer, sizeof(date_buffer), "%Y年%m月%d日", &local_tm)) {
-        // 成功
+    if (mode == '1') {
+        process_single_file();
+    } else if (mode == '2') {
+        process_batch();
     } else {
-        strcpy(date_buffer, "日期获取失败");
+        std::cout << "无效的模式选择。\n";
     }
-    std::string date_str(date_buffer);
-
-    // --- 生成标签和分类的HTML ---
-    std::stringstream tags_ss(tags_input);
-    std::string tag;
-    std::stringstream tags_html_ss;
-    std::string first_tag = "";
-    std::vector<std::string> colors = {"indigo", "purple", "pink", "green", "blue", "yellow", "red"};
-    int color_index = 0;
-
-    while (std::getline(tags_ss, tag, ',')) {
-        size_t first = tag.find_first_not_of(" \t");
-        if (std::string::npos == first) continue;
-        size_t last = tag.find_last_not_of(" \t");
-        tag = tag.substr(first, (last - first + 1));
-
-        if (!tag.empty()) {
-            if (first_tag.empty()) {
-                first_tag = tag;
-            }
-            const std::string& color = colors[color_index % colors.size()];
-            tags_html_ss << "<a href=\"#\" class=\"bg-" << color << "-100 text-" << color << "-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-" << color << "-200 transition-colors\">" << escape_html(tag) << "</a>\n";
-            color_index++;
-        }
-    }
-
-    std::string category_html;
-    if (first_tag.empty()) {
-        category_html = "<span>分类：<a href=\"#\" class=\"text-purple-600 hover:underline\">未分类</a></span>";
-    } else {
-        category_html = "<span>分类：<a href=\"#\" class=\"text-purple-600 hover:underline\">" + escape_html(first_tag) + "</a></span>";
-    }
-
-    // 填充模板
-    std::string final_html = HTML_TEMPLATE;
-    replace_all(final_html, "<!--TITLE_PLACEHOLDER-->", escape_html(title));
-    replace_all(final_html, "<!--DATE_PLACEHOLDER-->", date_str);
-    replace_all(final_html, "<!--CONTENT_PLACEHOLDER-->", parsed_content);
-    replace_all(final_html, "<!--TAGS_PLACEHOLDER-->", tags_html_ss.str());
-    replace_all(final_html, "<!--CATEGORY_PLACEHOLDER-->", category_html);
-
-    std::ofstream output_file(output_filename);
-    if (!output_file.is_open()) {
-        std::cerr << "错误: 无法创建输出文件 '" << output_filename << "'" << std::endl;
-        return 1;
-    }
-
-    output_file << final_html;
-    output_file.close();
-
-    std::cout << "\n成功! 文章HTML文件已生成: " << output_filename << std::endl;
 
     return 0;
 }
-

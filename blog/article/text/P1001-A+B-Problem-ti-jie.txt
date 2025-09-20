@@ -1,0 +1,93 @@
+P1001 A+B Problem 题解
+
+不要被误导了，这是一道很简单的题目。
+
+由于直接计算两数的和比较困难，考虑使用数据结构。
+
+不难发现可以维护一棵树套树，将 $a$ 和 $b$ 分别插入该树中。众所周知，树套树有一个经典功能就是查询区间排名。由于在区间 $\left [ 1,2 \right ]$ 中有且只有 $a$ 和 $b$ 两个数，所以只需要将该区间中排名为 $1$ 和 $2$ 的数相加，就是我们所要求的值。
+
+参考代码如下：
+
+```cpp
+#include<bits/stdc++.h>
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+#define int long long
+#define PII pair<int,int>
+#define mp make_pair
+#define ls(p) p<<1
+#define rs(p) p<<1|1 
+typedef tree<PII,null_type,less<PII>,rb_tree_tag,tree_order_statistics_node_update> rbt; 
+const int N=5e4+10;
+const int MAXINF=2147483647;
+const int MININF=-2147483647; 
+
+namespace IO{
+	inline int read(){ int x=0,f=1;char ch=getchar(); while(ch<'0'||ch>'9'){ if(ch=='-') f=-1; ch=getchar(); } while(ch>='0'&&ch<='9') x=(x<<1)+(x<<3)+(ch^48),ch=getchar(); return x*f; }
+	inline void write(int x){ if(x<0) putchar('-'),x=-x; if(x>9) write(x/10); putchar(x%10+'0'); }
+}using namespace IO;
+
+int n,m,a[N],tot;
+
+int MAX(int x,int y){
+	if(x>y){
+		return x;
+	}
+	return y;
+}
+
+int MIN(int x,int y){
+	if(x<y){
+		return x;
+	}
+	return y;
+}
+
+struct segment_tree{
+	struct node{
+		int mx,mn;
+		rbt t;
+	}t[N<<2];
+	
+	void push_up(int p){
+		t[p].mx=MAX(t[ls(p)].mx,t[rs(p)].mx),t[p].mn=MIN(t[ls(p)].mn,t[rs(p)].mn);
+	}
+	
+	void build(int p,int l,int r){
+		t[p].mn=MAXINF;
+		if(l==r) return t[p].t.insert(mp(a[l],++tot)),t[p].mx=a[l],t[p].mn=a[l],void();
+		for(int i=l;i<=r;i++) t[p].t.insert(mp(a[i],++tot));
+		int mid=(l+r)>>1;
+		build(ls(p),l,mid),build(rs(p),mid+1,r),push_up(p);
+	}
+	
+	int rank_k(int p,int l,int r,int ql,int qr,PII k){
+		if(ql<=l&&r<=qr) return t[p].t.order_of_key(k);
+		int mid=(l+r)>>1,ret=0;
+		if(ql<=mid) ret+=rank_k(ls(p),l,mid,ql,qr,k);
+		if(qr>mid) ret+=rank_k(rs(p),mid+1,r,ql,qr,k);
+		return ret;
+	}
+	
+	int kth_rank(int ql,int qr,int k){
+		int l=t[1].mn-1,r=t[1].mx+1,rk;
+		while(l<r){
+			int mid=(l+r)>>1;
+			rk=rank_k(1,1,n,ql,qr,mp(mid,tot+1));
+			if(rk<k) l=mid+1;
+			else r=mid;
+		}
+		return l;
+	}
+}t;
+
+signed main(){
+	n=2,m=1;
+	for(int i=1;i<=n;i++) a[i]=read();
+	t.build(1,1,n);
+	for(int i=1;i<=m;i++) write(t.kth_rank(1,n,1)+t.kth_rank(1,n,2)),putchar('\n');
+	return 0;
+}
+```
